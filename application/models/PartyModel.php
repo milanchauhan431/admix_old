@@ -112,6 +112,11 @@ class PartyModel extends MasterModel{
         if(!empty($data['system_code'])):
             $queryData['where']['party_master.system_code'] = $data['system_code'];
         endif;
+
+        /* Updated By :- Sweta @05-09-2023 */
+        if(!empty($data['party_name'])):
+            $queryData['where']['party_master.party_name'] = $data['party_name'];
+        endif;
         return $this->row($queryData);
     }
 
@@ -198,7 +203,7 @@ class PartyModel extends MasterModel{
     public function checkDuplicate($data){
         $queryData['tableName'] = $this->partyMaster;
         $queryData['where']['party_name'] = $data['party_name'];
-		$queryData['where']['party_category'] = $data['party_category'];
+		if(!empty($data['party_category'])) { $queryData['where']['party_category'] = $data['party_category']; } /* Updated By :- Sweta @05-09-2023 */
         
         if(!empty($data['id']))
             $queryData['where']['id !='] = $data['id'];
@@ -375,6 +380,17 @@ class PartyModel extends MasterModel{
         $queryData['tableName'] = $this->groupMaster;
         $groupData = $this->rows($queryData);
         return $groupData;
+    }
+
+    /* Created By :- Sweta @05-09-2023 */
+    public function partySearch(){
+		$data['tableName'] = $this->partyMaster;
+		$data['select'] = 'party_name';
+		$data['where']['party_category != '] = 4;
+		$result = $this->rows($data);
+		$searchResult = array();
+		foreach($result as $row){$searchResult[] = $row->party_name;}
+		return  $searchResult;
     }
 }
 ?>
