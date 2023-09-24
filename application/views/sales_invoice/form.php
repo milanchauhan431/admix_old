@@ -20,12 +20,12 @@
                                         <input type="hidden" name="gst_type" id="gst_type" value="<?=(!empty($dataRow->gst_type))?$dataRow->gst_type:""?>">
                                         <input type="hidden" name="party_state_code" id="party_state_code" value="<?=(!empty($dataRow->party_state_code))?$dataRow->party_state_code:""?>">
 										<input type="hidden" name="tax_class" id="tax_class" value="<?=(!empty($dataRow->tax_class))?$dataRow->tax_class:""?>">
-										<input type="hidden" name="memo_type" id="memo_type" value="<?=(!empty($dataRow->memo_type))?$dataRow->memo_type:"DEBIT"?>">
+										<!-- <input type="hidden" name="memo_type" id="memo_type" value="<?=(!empty($dataRow->memo_type))?$dataRow->memo_type:"DEBIT"?>">
 										<input type="hidden" name="challan_no" id="challan_no" value="<?=(!empty($dataRow->challan_no))?$dataRow->challan_no:""?>">
 										<input type="hidden" name="doc_no" id="doc_no" value="<?=(!empty($dataRow->doc_no))?$dataRow->doc_no:""?>">
 										<input type="hidden" name="doc_date" id="doc_date" value="<?=(!empty($dataRow->doc_date))?$dataRow->doc_date:""?>">
 										<input type="hidden" name="masterDetails[t_col_1]" id="master_t_col_1" value="<?=(!empty($dataRow->contact_person))?$dataRow->contact_person:""?>">
-										<input type="hidden" name="masterDetails[t_col_2]" id="master_t_col_2" value="<?=(!empty($dataRow->contact_no))?$dataRow->contact_no:""?>">
+										<input type="hidden" name="masterDetails[t_col_2]" id="master_t_col_2" value="<?=(!empty($dataRow->contact_no))?$dataRow->contact_no:""?>"> -->
 									</div>
 
                                     <div class="col-md-2 form-group">
@@ -84,13 +84,13 @@
                                         </select>
                                     </div>
 
-                                    <!--<div class="col-md-2 form-group">
+                                    <div class="col-md-2 form-group hidden">
 										<label for="memo_type">Memo Type</label>
 										<select name="memo_type" id="memo_type" class="form-control">
 											<option value="DEBIT" <?=(!empty($dataRow->memo_type) && $dataRow->memo_type == "DEBIT")?"selected":""?> >Debit</option>
 											<option value="CASH" <?=(!empty($dataRow->memo_type) && $dataRow->memo_type == "CASH")?"selected":""?> >Cash</option>
 										</select>
-									</div>-->
+									</div>
 
                                     <div class="col-md-4 form-group">
 										<label for="sp_acc_id">GST Type </label>
@@ -100,38 +100,38 @@
                                         <input type="hidden" id="inv_type" value="SALES">
 									</div>
 
-                                    <!--<div class="col-md-2 form-group">
+                                    <div class="col-md-2 form-group hidden">
 										<label for="challan_no">Challan No.</label>
 										<input type="text" name="challan_no" class="form-control" placeholder="Enter Challan No." value="<?= (!empty($dataRow->challan_no)) ? $dataRow->challan_no : "" ?>" />
 									</div>
 
-                                    <div class="col-md-2 form-group">
+                                    <div class="col-md-2 form-group hidden">
                                         <label for="doc_no">PO. No.</label>
                                         <input type="text" name="doc_no" id="doc_no" class="form-control" value="<?=(!empty($dataRow->doc_no))?$dataRow->doc_no:""?>">
                                     </div>
 
-                                    <div class="col-md-3 form-group">
+                                    <div class="col-md-3 form-group hidden">
                                         <label for="doc_date">PO. Date</label>
                                         <input type="date" name="doc_date" id="doc_date" class="form-control" value="<?=(!empty($dataRow->doc_date))?$dataRow->doc_date:getFyDate()?>">
                                     </div>
 
-                                    <div class="col-md-2 form-group">
+                                    <div class="col-md-2 form-group hidden">
 										<label for="apply_round">Apply Round Off</label>
                                         <select name="apply_round" id="apply_round" class="form-control">
 											<option value="1" <?= (!empty($dataRow) && $dataRow->apply_round == 1) ? "selected" : "" ?>>Yes</option>
 											<option value="0" <?= (!empty($dataRow) && $dataRow->apply_round == 0) ? "selected" : "" ?>>No</option>
 										</select>
-                                    </div>-->
+                                    </div>
                                     
-                                    <!--<div class="col-md-2 form-group">
+                                    <div class="col-md-2 form-group hidden">
                                         <label for="master_t_col_1">Contact Person</label>
                                         <input type="text" name="masterDetails[t_col_1]" id="master_t_col_1" class="form-control" value="<?=(!empty($dataRow->contact_person))?$dataRow->contact_person:""?>">
                                     </div>
 
-                                    <div class="col-md-2 form-group">
+                                    <div class="col-md-2 form-group hidden">
                                         <label for="master_t_col_2">Contact No.</label>
                                         <input type="text" name="masterDetails[t_col_2]" id="master_t_col_2" class="form-control numericOnly" value="<?=(!empty($dataRow->contact_no))?$dataRow->contact_no:""?>">
-                                    </div>-->
+                                    </div>
 
                                     <div class="col-md-5 form-group">
                                         <label for="master_t_col_3">Ship To</label>
@@ -165,14 +165,14 @@
 									<div class="col-md-12 itemForm" id="itemForm">
 										<div class="row form-group">
 											<div id="itemInputs">
-												<input type="hidden" name="trans_id" id="trans_id" value="" />
-												<input type="hidden" name="trans_from_entry_type" id="trans_from_entry_type" value="" />
-												<input type="hidden" name="trans_ref_id" id="trans_ref_id" value="" />
-												<input type="hidden" name="row_index" id="row_index" value="">
-												<input type="hidden" name="item_code" id="item_code" value="" />
-												<input type="hidden" name="item_type" id="item_type" value="1" />
-												<input type="hidden" name="stock_eff" id="stock_eff" value="1" />
-												<input type="hidden" name="org_price" id="org_price" class="org_price" value="" />
+												<input type="hidden" id="trans_id" class="itemFormInput" value="" />
+												<input type="hidden" class="itemFormInput" id="trans_from_entry_type" value="" />
+												<input type="hidden" class="itemFormInput" id="trans_ref_id" value="" />
+												<input type="hidden" class="itemFormInput" id="row_index" value="">
+												<input type="hidden" class="itemFormInput" id="item_code" value="" />
+												<input type="hidden" class="itemFormInput" id="item_type" value="1" />
+												<input type="hidden" class="itemFormInput" id="stock_eff" value="1" />
+												<input type="hidden" class="itemFormInput" id="org_price" class="org_price" value="" />
 											</div>
 											<div class="col-md-4 form-group">
 												<label for="item_id">Product Name</label>
@@ -188,39 +188,39 @@
                                                         </div>
                                                     </span>
                                                 </div>
-												<input type="hidden" name="item_name" id="item_name" class="form-control" value="" />
-												<select name="item_id" id="item_id" class="form-control select2 itemDetails itemOptions" data-res_function="resItemDetail" data-item_type="1">
+												<input type="hidden" id="item_name" class="form-control itemFormInput" value="" />
+												<select id="item_id" class="form-control select2 itemDetails itemOptions itemFormInput" data-res_function="resItemDetail" data-item_type="1">
 													<option value="">Select Product Name</option>
 													<?=getItemListOption($itemList)?>
 												</select>
 											</div>
 											<div class="col-md-2 form-group">
 												<label for="qty">Quantity</label>
-												<input type="text" name="qty" id="qty" class="form-control floatOnly req" value="0">
+												<input type="text" id="qty" class="form-control floatOnly req itemFormInput" value="0">
 											</div>
 											<div class="col-md-2 form-group">
 												<label for="packing_qty">Packing Standard</label>
-												<input type="text" name="packing_qty" id="packing_qty" class="form-control" value="" readonly>
+												<input type="text" id="packing_qty" class="form-control itemFormInput" value="" readonly>
 											</div>
 											<div class="col-md-2 form-group">
 												<label for="disc_per">Disc. (%)</label>
-												<input type="text" name="disc_per" id="disc_per" class="form-control floatOnly" value="0">
+												<input type="text" id="disc_per" class="form-control floatOnly itemFormInput" value="0">
 											</div>
 											<div class="col-md-2 form-group">
 												<label for="price">Price</label>
-												<input type="text" name="price" id="price" class="form-control floatOnly req" value="0" />
+												<input type="text" id="price" class="form-control floatOnly req itemFormInput" value="0" />
 											</div>
 											<div class="col-md-2 form-group">
 												<label for="unit_id">Unit</label>        
-												<select name="unit_id" id="unit_id" class="form-control select2">
+												<select id="unit_id" class="form-control select2 itemFormInput">
 													<option value="">Select Unit</option>
 													<?=getItemUnitListOption($unitList)?>
 												</select> 
-												<input type="hidden" name="unit_name" id="unit_name" class="form-control" value="" />                       
+												<input type="hidden" id="unit_name" class="form-control itemFormInput" value="" />                       
 											</div>
 											<div class="col-md-2 form-group">
 												<label for="hsn_code">HSN Code</label>
-												<input type="text" name="hsn_code" id="hsn_code" class="form-control numericOnly req" value="" />
+												<input type="text" id="hsn_code" class="form-control numericOnly req itemFormInput" value="" />
 												<!--<select name="hsn_code" id="hsn_code" class="form-control select2">
 													<option value="">Select HSN Code</option>
 													<?=getHsnCodeListOption($hsnList)?>
@@ -228,7 +228,7 @@
 											</div>
 											<div class="col-md-2 form-group">
 												<label for="gst_per">GST Per.(%)</label>
-												<select name="gst_per" id="gst_per" class="form-control select2">
+												<select id="gst_per" class="form-control select2 itemFormInput">
 													<?php
 														foreach($this->gstPer as $per=>$text):
 															echo '<option value="'.$per.'">'.$text.'</option>';
@@ -238,7 +238,7 @@
 											</div>
 											<div class="col-md-4 form-group">
 												<label for="item_remark">Remark</label>
-												<input type="text" name="item_remark" id="item_remark" class="form-control" value="" />
+												<input type="text" id="item_remark" class="form-control itemFormInput" value="" />
 											</div>
 											<div class="col-md-2">
 												<button type="button" class="btn btn-success waves-effect float-right btn-block mt-30 saveItem"><i class="fa fa-plus"></i> Add</button>

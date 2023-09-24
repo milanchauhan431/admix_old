@@ -44,14 +44,7 @@ class SalesInvoice extends MY_Controller{
         $this->data['termsList'] = $this->terms->getTermsList(['type'=>'Sales']);
 		$this->data['ledgerList'] = $this->party->getPartyList(['group_code'=>["'DT'","'ED'","'EI'","'ID'","'II'"]]);
         $this->load->view($this->form,$this->data);
-    }
-	
-	public function getHSNList(){
-        $result = $this->item->getHSNList();
-		$searchResult = array();
-		foreach($result as $row){ $searchResult[] = $row->hsn_code; }
-		$this->printJson($searchResult);
-	}
+    }	
 
     public function save(){
         $data = $this->input->post();
@@ -101,7 +94,6 @@ class SalesInvoice extends MY_Controller{
                 endif;
             endforeach;
         endif;
-		unset($data['trans_id'],$data['trans_from_entry_type'],$data['trans_ref_id'],$data['row_index'],$data['item_code'],$data['item_type'],$data['stock_eff'],$data['org_price'],$data['item_name'],$data['item_id'],$data['qty'],$data['packing_qty'],$data['disc_per'],$data['price'],$data['unit_id'],$data['unit_name'],$data['hsn_code'],$data['item_remark']);
 	
         if(!empty($errorMessage)):
             $this->printJson(['status'=>0,'message'=>$errorMessage]);

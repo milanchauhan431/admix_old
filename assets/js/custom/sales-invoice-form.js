@@ -54,10 +54,9 @@ $(document).ready(function(){
 			formData[v.name] = v.value;
 		});*/
 		
-		var fd = $('.itemForm').find('input,select,textarea').serializeArray(); console.log(fd);
         var formData = {};
-        $.each(fd,function(i, v) {
-            formData[v.name] = v.value;
+        $.each($(".itemFormInput"),function(i, v) {
+            formData[$(this).attr("id")] = $(this).val();
         });
 		
         $("#itemForm .error").html("");
@@ -176,15 +175,16 @@ $(document).ready(function(){
 		$("#gst_per").select2();
 	});*/
 	$('#itemForm #hsn_code').typeahead({
-		source: function(query, result)
-		{
+		source: function(query, result){
 			$.ajax({
-				url:base_url + controller + '/getHSNList',
+				url:base_url + 'hsnMaster/getHSNListOnType',
 				method:"POST",
 				global:false,
 				data:{query:query},
 				dataType:"json",
-				success:function(data){result($.map(data, function(hsn_code){return hsn_code;}));}
+				success:function(data){
+					result($.map(data, function(hsn_code){return hsn_code;}));
+				}
 			});
 		}
 	 });
