@@ -156,7 +156,7 @@ class DbUtility extends CI_Controller{
     /* 
     *   Created BY : Milan Chauhan
     *   Created AT : 27-09-2023
-    *   Post Data : password
+    *   Post Data : password,db_name,querys
     *   Note : Get SQL Querys from Local and Execute in Live Database
     */
     public function performSqlQuerys(){

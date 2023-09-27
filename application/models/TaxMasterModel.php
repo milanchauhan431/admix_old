@@ -44,7 +44,7 @@ class TaxMasterModel extends MasterModel{
                 $this->db->trans_commit();
                 return $result;
             endif;
-        }catch(\Exception $e){
+        }catch(\Throwable $e){
             $this->db->trans_rollback();
             return ['status'=>2,'message'=>"somthing is wrong. Error : ".$e->getMessage()];
         }	
@@ -71,7 +71,7 @@ class TaxMasterModel extends MasterModel{
                 $this->db->trans_commit();
                 return $result;
             endif;
-        }catch(\Exception $e){
+        }catch(\Throwable $e){
             $this->db->trans_rollback();
             return ['status'=>2,'message'=>"somthing is wrong. Error : ".$e->getMessage()];
         }	

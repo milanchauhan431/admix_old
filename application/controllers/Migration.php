@@ -192,7 +192,7 @@ class Migration extends MY_Controller{
                 $this->db->trans_commit();
                 echo "Defualt Ledger Migration Success.";
             endif;
-        }catch(\Exception $e){
+        }catch(\Throwable $e){
             $this->db->trans_rollback();
             echo $e->getMessage();exit;
         }
@@ -225,7 +225,7 @@ class Migration extends MY_Controller{
                 $this->db->trans_commit();
                 echo "Closing Balance Migration Success.";
             endif;
-        }catch(\Exception $e){
+        }catch(\Throwable $e){
             $this->db->trans_rollback();
             echo $e->getMessage();exit;
         }
@@ -304,7 +304,7 @@ class Migration extends MY_Controller{
                 $this->db->trans_commit();
                 echo "Party Migration Success.";
             endif;
-        }catch(\Exception $e){
+        }catch(\Throwable $e){
             $this->db->trans_rollback();
             echo $e->getMessage();exit;
         }
@@ -356,7 +356,7 @@ class Migration extends MY_Controller{
                 $this->db->trans_commit();
                 echo "Party GST Details Migration Success.";
             endif;
-        }catch(\Exception $e){
+        }catch(\Throwable $e){
             $this->db->trans_rollback();
             echo $e->getMessage();exit;
         }
@@ -413,7 +413,7 @@ class Migration extends MY_Controller{
                 $this->db->trans_commit();
                 echo "Item Migration Success.";
             endif;
-        }catch(\Exception $e){
+        }catch(\Throwable $e){
             $this->db->trans_rollback();
             echo $e->getMessage();exit;
         }
@@ -589,7 +589,7 @@ class Migration extends MY_Controller{
                 $this->db->trans_rollback();
                 echo "Sales Invoice Migration Success.";
             endif;
-        }catch(\Exception $e){
+        }catch(\Throwable $e){
             $this->db->trans_rollback();
             echo $e->getMessage();exit;
         }
@@ -759,7 +759,7 @@ class Migration extends MY_Controller{
                 $this->db->trans_rollback();
                 echo "Purchase Invoice Migration Success.";
             endif;
-        }catch(\Exception $e){
+        }catch(\Throwable $e){
             $this->db->trans_rollback();
             echo $e->getMessage();exit;
         }

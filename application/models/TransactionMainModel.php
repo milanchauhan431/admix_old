@@ -246,7 +246,7 @@ class TransactionMainModel extends MasterModel{
 			endif;
 
 			return true;
-		}catch(\Exception $e){
+		}catch(\Throwable $e){
 			return false;
         }		
 	}
@@ -259,7 +259,7 @@ class TransactionMainModel extends MasterModel{
 			$this->store("trans_ledger",$data);
 			$this->updateAccountBalance($data['vou_acc_id'],( $data['p_or_m'] * $data['amount'] ));
 			return true;
-		}catch(\Exception $e){
+		}catch(\Throwable $e){
 			return false;
         }			
 	}
@@ -272,7 +272,7 @@ class TransactionMainModel extends MasterModel{
 			$setData['set']['cl_balance'] = 'cl_balance, + '.$amount;
 			$this->setValue($setData);
 			return true;
-		}catch(\Exception $e){
+		}catch(\Throwable $e){
 			return false;
         }
 	}
@@ -293,7 +293,7 @@ class TransactionMainModel extends MasterModel{
 				$this->deleteExpenseTrans($trans_main_id);
 			endif;
 			return true;
-		}catch(\Exception $e){
+		}catch(\Throwable $e){
 			return false;
         }
 	}
@@ -302,7 +302,7 @@ class TransactionMainModel extends MasterModel{
 		try{
 			$this->trash('trans_expense',['trans_main_id'=>$trans_main_id]);
 			return true;
-		}catch(\Exception $e){
+		}catch(\Throwable $e){
 			return false;
 		}
 	}
