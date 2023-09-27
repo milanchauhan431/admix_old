@@ -336,10 +336,12 @@
                             </div>
                         </div>
                         <a class="dropdown-item" href="<?=base_url("hr/employees/empProfile/".$this->session->userdata('loginId'))?>"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
-                        <a class="dropdown-item" href="javascript:void(0)"><i class="ti-wallet m-r-5 m-l-5"></i> TP Balance</a>
+                        <!-- <a class="dropdown-item" href="javascript:void(0)"><i class="ti-wallet m-r-5 m-l-5"></i> TP Balance</a> -->
                         <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#change-psw"><i class="ti-key m-r-5 m-l-5"></i> Change Password</a>
                         <?php if($_SERVER['HTTP_HOST'] == 'localhost'): ?>
                             <a class="dropdown-item addNew press-add-btn" href="javascript:void(0)" data-button="both" data-modal_id="modal-md" data-function="dbForm" data-controller="dbUtility" data-fnsave="syncDbQuery" data-savebtn_text="<i class='fa fa-retweet'></i> SYNC" data-form_title="SYNC DB LIVE TO LOCAL"><i class="ti-link m-r-5 m-l-5"></i> SYNC DB</a>
+
+                            <a class="dropdown-item addNew press-add-btn" href="javascript:void(0)" data-button="both" data-modal_id="modal-md" data-function="loadQueryForm" data-controller="dbUtility" data-fnsave="executeSqlQuerys" data-savebtn_text="<i class='fa fa-check'></i> Submit" data-form_title="Execute SQL Querys In Live DB"><i class="ti-server m-r-5 m-l-5"></i> Execute SQL Querys</a>
 
                             <a class="dropdown-item addNew press-add-btn" href="<?=LIVE_LINK?>dbUtility/exportDBfile/Nbt-<?=date("dmY")?>/<?=MASTER_DB?>" target="_blank"><i class="ti-save m-r-5 m-l-5"></i> Export Live DB</a>
                         <?php endif; ?>
