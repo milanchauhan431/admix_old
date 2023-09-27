@@ -223,14 +223,9 @@ class GstReport extends MY_Controller{
         $data['vou_name_s'] = ($data['report'] == "gstr1")?"'Sale','GInc'":"'Purc','GExp'";
         $result = $this->gstReport->_b2b($data);
 
-        $no_of_recipients = 0;
-        $no_of_invoice = 0;
-        $total_invoice_value = 0;
-        $total_taxable_value = 0;
-        $total_igst_amount = 0;
-        $total_cgst_amount = 0;
-        $total_sgst_amount = 0;
-        $total_cess = 0;
+        $no_of_recipients = $no_of_invoice = $total_invoice_value = $total_taxable_value = 0;
+        $total_igst_amount = $total_cgst_amount = $total_sgst_amount = $total_cess = 0;
+        $total_aigst_amount = $total_acgst_amount = $total_asgst_amount = $total_acess = 0;
 
         $html = '';
         if($data['report'] == "gstr1"):
@@ -320,14 +315,25 @@ class GstReport extends MY_Controller{
         else:
             $transMainId = array(); $tbody = '';
             foreach($result as $row):
+                $invType = "Regular";
+                if($row->tax_class == "SEZSGSTACC"):
+                    $invType = "SEZ supplies with payment";
+                elseif($row->tax_class == "SEZSGSTACC"):
+                    $invType = "SEZ supplies without payment";
+                elseif($row->tax_class == "SEZSGSTACC"):
+                    $invType = "Deemed Exp";
+                endif;
+
+                $isRc = (in_array($row->itc,["Capital Goods"]))?"Y":"N";
+
                 $tbody .= '<tr>
                     <td class="text-left">'.$row->gstin.'</td>
                     <td class="text-left">'.$row->trans_number.'</td>
                     <td class="text-center">'.date("d-M-Y",strtotime($row->trans_date)).'</td>
                     <td class="text-right">'.sprintf("%.2F",$row->net_amount).'</td>
                     <td class="text-left">'.$row->party_state_code.'-'.$row->state_name.'</td>
-                    <td class="text-center">N</td>
-                    <td class="text-left">Regular</td>
+                    <td class="text-center">'.$isRc.'</td>
+                    <td class="text-left">'.$invType.'</td>
                     <td class="text-right">'.sprintf("%.2F",$row->gst_per).'</td>
                     <td class="text-right">'.sprintf("%.2F",$row->taxable_amount).'</td>
                     <td class="text-right">'.sprintf("%.2F",$row->igst_amount).'</td>
@@ -335,10 +341,10 @@ class GstReport extends MY_Controller{
                     <td class="text-right">'.sprintf("%.2F",$row->sgst_amount).'</td>
                     <td class="text-right">'.sprintf("%.2F",$row->cess_amount).'</td>
                     <td class="text-left">'.$row->itc.'</td>
-                    <td class="text-right">0.00</td>
-                    <td class="text-right">0.00</td>
-                    <td class="text-right">0.00</td>
-                    <td class="text-right">0.00</td>
+                    <td class="text-right">'.(($isRc == "Y")?sprintf("%.2F",$row->igst_amount):"0.00").'</td>
+                    <td class="text-right">'.(($isRc == "Y")?sprintf("%.2F",$row->cgst_amount):"0.00").'</td>
+                    <td class="text-right">'.(($isRc == "Y")?sprintf("%.2F",$row->sgst_amount):"0.00").'</td>
+                    <td class="text-right">'.(($isRc == "Y")?sprintf("%.2F",$row->cess_amount):"0.00").'</td>
                 </tr>';
 
                 if(!in_array($row->id,$transMainId)):
@@ -353,6 +359,11 @@ class GstReport extends MY_Controller{
                 $total_cgst_amount += $row->cgst_amount;
                 $total_sgst_amount += $row->sgst_amount;
                 $total_cess += $row->cess_amount;
+
+                $total_aigst_amount += ($isRc == "Y")?$row->igst_amount:0;
+                $total_acgst_amount += ($isRc == "Y")?$row->cgst_amount:0;
+                $total_asgst_amount += ($isRc == "Y")?$row->sgst_amount:0;
+                $total_acess += ($isRc == "Y")?$row->cess_amount:0;
             endforeach;
 
             $html .= '<thead class="thead-info text-center">
@@ -394,10 +405,10 @@ class GstReport extends MY_Controller{
                     <td>'.sprintf("%.2F",$total_sgst_amount).'</td>
                     <td>'.sprintf("%.2F",$total_cess).'</td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>'.sprintf("%.2F",$total_aigst_amount).'</td>
+                    <td>'.sprintf("%.2F",$total_acgst_amount).'</td>
+                    <td>'.sprintf("%.2F",$total_asgst_amount).'</td>
+                    <td>'.sprintf("%.2F",$total_acess).'</td>
                 </tr>
                 <tr>
                     <th>GSTIN of Supplier</th>
@@ -426,31 +437,23 @@ class GstReport extends MY_Controller{
     }
 
     public function b2bur($data){
-        $data['entry_type'] = '12,18';
+        $data['vou_name_s'] = "'Purc','GExp'";
         $result = $this->gstReport->_b2bur($data);
 
-        $no_of_recipients = 0;
-        $no_of_invoice = 0;
-        $total_invoice_value = 0;
-        $total_taxable_value = 0;
-        $total_igst_amount = 0;
-        $total_cgst_amount = 0;
-        $total_sgst_amount = 0;
-        $total_cess = 0;
+        $no_of_recipients = $no_of_invoice = $total_invoice_value = $total_taxable_value = 0;
+        $total_igst_amount = $total_cgst_amount = $total_sgst_amount = $total_cess = 0;
+        $total_aigst_amount = $total_acgst_amount = $total_asgst_amount = $total_acess = 0;
 
         $html = '';
         $transMainId = array(); $tbody = '';
         foreach($result as $row):
-            $itc = ""; 
-            if($row->sales_type == 1): $itc = "Input"; 
-            elseif($row->sales_type == 3): $itc = "Input services"; endif;
 
             $tbody .= '<tr>
                 <td class="text-left">'.$row->party_name.'</td>
                 <td class="text-left">'.$row->doc_no.'</td>
                 <td class="text-center">'.date("d-M-Y",strtotime($row->doc_date)).'</td>
                 <td class="text-right">'.sprintf("%.2F",$row->net_amount).'</td>
-                <td class="text-left">'.$row->gst_statecode.'-'.$row->state_name.'</td>
+                <td class="text-left">'.$row->party_state_code.'-'.$row->state_name.'</td>
                 <td class="text-left">'.(($row->gst_type == 2)?"Intra State":"Inter State").'</td>
                 <td class="text-right">'.sprintf("%.2F",$row->gst_per).'</td>
                 <td class="text-right">'.sprintf("%.2F",$row->taxable_amount).'</td>
@@ -458,7 +461,7 @@ class GstReport extends MY_Controller{
                 <td class="text-right">'.sprintf("%.2F",$row->cgst_amount).'</td>
                 <td class="text-right">'.sprintf("%.2F",$row->sgst_amount).'</td>
                 <td class="text-right">'.sprintf("%.2F",$row->cess_amount).'</td>
-                <td class="text-left">'.$itc.'</td>
+                <td class="text-left">'.$row->itc.'</td>
                 <td class="text-right">0.00</td>
                 <td class="text-right">0.00</td>
                 <td class="text-right">0.00</td>
@@ -609,29 +612,23 @@ class GstReport extends MY_Controller{
     }
 
     public function b2cl($data){
-        $data['entry_type']='6,7,8,19';
+        $data['vou_name_s'] = "'Sale','GInc'";
         $result=$this->gstReport->_b2cl($data);
-        $total_invoice_value = 0;
-        $total_taxable_value = 0;
-        $total_cess = 0;
 
-        $html = '';
-        
-
-        $transMainId = array(); $tbody = '';
+        $no_of_recipients = $no_of_invoice = $total_invoice_value = $total_taxable_value = $total_cess = 0;
+        $transMainId = array(); $html = $tbody = '';
         foreach($result as $row):
             $tbody .= '<tr>
-                <td class="text-left">'.$row->trans_prefix.$row->trans_no.'</td>
+                <td class="text-left">'.$row->trans_number.'</td>
                 <td class="text-center">'.date("d-M-Y",strtotime($row->trans_date)).'</td>
                 <td class="text-right">'.sprintf("%.2F",$row->net_amount).'</td>
-                <td class="text-left">'.$row->gst_statecode.'-'.$row->state_name.'</td>
+                <td class="text-left">'.$row->party_state_code.'-'.$row->state_name.'</td>
                 <td class="text-center">N</td>
                 <td class="text-right">'.sprintf("%.2F",$row->gst_per).'</td>
                 <td class="text-right">'.sprintf("%.2F",$row->taxable_amount).'</td>
                 <td class="text-right">'.sprintf("%.2F",$row->cess_amount).'</td>
                 <td class="text-left"></td>
-                <td class="text-left"></td>
-                
+                <td class="text-left"></td>                
             </tr>';
 
             if(!in_array($row->id,$transMainId)):
@@ -661,7 +658,7 @@ class GstReport extends MY_Controller{
                 <th></th>
             </tr>
             <tr>
-                <td>'.count($result).'</td>
+                <td>'.$no_of_invoice.'</td>
                 <td></td>
                 <td>'.sprintf("%.2F",$total_invoice_value).'</td>
                 <td></td>
@@ -744,16 +741,11 @@ class GstReport extends MY_Controller{
     }
 
     public function b2cs($data){
-        $data['entry_type']='6,7,8,19';
+        $data['vou_name_s'] = "'Sale','GInc'";
         $result=$this->gstReport->_b2cs($data);
 
-        $total_taxable_value = 0;
-        $total_cess = 0;
-
-        $html = '';
-        
-
-        $transMainId = array(); $tbody = '';
+        $total_taxable_value = $total_cess = 0;
+        $transMainId = array(); $html = $tbody = '';
         foreach($result as $row):
             $html .= '<tr>
                 <td class="text-left">OE</td>
