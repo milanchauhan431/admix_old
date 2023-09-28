@@ -181,6 +181,28 @@ $(document).ready(function(){
 		$("#gst_per").val(($("#hsn_code :selected").data('gst_per') || 0));
 		$("#gst_per").select2();
 	});
+
+	$('#doc_no').typeahead({
+		source: function(query, result){
+			$.ajax({
+				url:base_url + 'debitNote/getInvoiceList',
+				method:"POST",
+				global:false,
+				data:{doc_no:query,party_id:$("#party_id :selected").val(),order_type:$("#order_type :selected").val()},
+				dataType:"json",
+				success:function(data){
+					result($.map(data, function(row){return {name:row.trans_number,id:row.id,doc_date:row.trans_date};}));
+					$("#saveDebitNote #doc_date").val("");
+					$("#saveDebitNote #ref_id").val("");
+				}
+			});
+		},
+		updater: function(item) {
+            $("#saveDebitNote #doc_date").val(item.doc_date || "");
+			$("#saveDebitNote #ref_id").val(item.id || "");
+			return item;
+        }
+	});
 });
 
 function AddRow(data) {
