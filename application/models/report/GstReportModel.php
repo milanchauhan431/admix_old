@@ -3,7 +3,6 @@ class GstReportModel extends MasterModel{
 
     public function _b2b($data){
         $party_id = (!empty($data['party_id']))?"and trans_main.party_id = ".$data['party_id']:"";
-        $taxClass = ($data['report'] == 'gstr1')?"'SALESGSTACC','SALESIGSTACC','SALESJOBGSTACC','SALESJOBIGSTACC'":"'PURGSTACC','PURIGSTACC','PURJOBGSTACC','PURJOBIGSTACC','PURURDGSTACC','PURURDIGSTACC'";
 
         $result = $this->db->query("
             SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.party_name,trans_main.net_amount,trans_main.vou_name_s,trans_main.gstin,trans_main.party_state_code,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,states.name as state_name,trans_main.sales_type,trans_main.doc_date,trans_main.itc,trans_main.tax_class
@@ -14,8 +13,7 @@ class GstReportModel extends MasterModel{
             WHERE trans_child.is_delete = 0
             AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
-            AND party_master.gst_type IN (1,2)
-            AND trans_main.tax_class IN (".$taxClass.")
+            AND trans_main.gstin != 'URP'
             AND trans_main.trans_status != 3
             ".$party_id."
             GROUP BY trans_child.gst_per,trans_main.trans_no
@@ -26,7 +24,6 @@ class GstReportModel extends MasterModel{
     }
 
     public function _b2bur($data){
-        $taxClass = "'PURURDGSTACC','PURTFACC','PUREXEMPTEDTFACC'";
         $party_id = (!empty($data['party_id']))?"and trans_main.party_id = ".$data['party_id']:"";
 
         $result = $this->db->query("
@@ -38,8 +35,7 @@ class GstReportModel extends MasterModel{
             WHERE trans_child.is_delete = 0
             AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
-            AND party_master.gst_type IN (4)
-            AND trans_main.tax_class IN (".$taxClass.")
+            AND trans_main.gstin = 'URP'
             AND trans_main.trans_status != 3
             ".$party_id."
             GROUP BY trans_child.gst_per,trans_main.trans_number
@@ -54,20 +50,18 @@ class GstReportModel extends MasterModel{
     }
 
     public function _b2cl($data){
-        $taxClass = "'SALESGSTACC','SALESIGSTACC','SALESJOBGSTACC','SALESJOBIGSTACC','SALESTFACC','SALESEXEMPTEDTFACC'";
         $party_id = (!empty($data['party_id']))?"and trans_main.party_id = ".$data['party_id']:"";
 
         $result = $this->db->query("
-            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.party_name,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,states.name as state_name,trans_main.sales_type,trans_main.doc_date,trans_main.gstin,trans_main.party_state_code
+            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.party_name,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,states.name as state_name,trans_main.sales_type,trans_main.doc_date,trans_main.gstin,states.gst_statecode as party_state_code
             FROM trans_child 
             LEFT JOIN trans_main ON trans_main.id = trans_child.trans_main_id
             LEFT JOIN party_master on party_master.id = trans_main.party_id
-            LEFT JOIN states on trans_main.party_state_code = states.gst_statecode
+            LEFT JOIN states on party_master.state_id = states.id
             WHERE trans_child.is_delete = 0
             AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
-            AND party_master.gst_type IN (4)
-            AND trans_main.tax_class IN (".$taxClass.")
+            AND trans_main.gstin = 'URP'
             AND trans_main.trans_status != 3
             ".$party_id."
             AND trans_main.taxable_amount > 250000
@@ -83,20 +77,18 @@ class GstReportModel extends MasterModel{
     }
 
     public function _b2cs($data){
-        $taxClass = "'SALESGSTACC','SALESIGSTACC','SALESJOBGSTACC','SALESJOBIGSTACC','SALESTFACC','SALESEXEMPTEDTFACC'";
         $party_id = (!empty($data['party_id']))?"and trans_main.party_id = ".$data['party_id']:"";
 
         $result = $this->db->query("
-            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.party_name,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,states.name as state_name,trans_main.sales_type,trans_main.doc_date,trans_main.gstin,trans_main.party_state_code
+            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.party_name,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,states.name as state_name,trans_main.sales_type,trans_main.doc_date,trans_main.gstin,states.gst_statecode as party_state_code
             FROM trans_child 
             LEFT JOIN trans_main ON trans_main.id = trans_child.trans_main_id
             LEFT JOIN party_master on party_master.id = trans_main.party_id
-            LEFT JOIN states on trans_main.party_state_code = states.gst_statecode
+            LEFT JOIN states on party_master.state_id = states.id
             WHERE trans_child.is_delete = 0
             AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
-            AND party_master.gst_type IN (4)
-            AND trans_main.tax_class IN (".$taxClass.")
+            AND trans_main.gstin = 'URP'
             AND trans_main.trans_status != 3
             ".$party_id."
             AND trans_main.taxable_amount <= 250000
@@ -113,22 +105,23 @@ class GstReportModel extends MasterModel{
 
     public function _cdnr($data){
         $party_id = (!empty($data['party_id']))?"and trans_main.party_id = ".$data['party_id']:"";
-        $group_code = ($data['report'] == "gstr1")?"SD":"SC";
+        $orderType = ($data['report'] == "gstr1")?"'Increase Sales','Decrease Sales','Sales Return'":"'Increase Purchase','Decrease Purchase','Purchase Return'";
 
         $result = $this->db->query("
-            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.party_name,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,states.name as state_name,trans_main.sales_type,trans_main.doc_date,trans_main.gstin,SUBSTRING(trans_main.gstin,1,2) as gst_statecode,trans_main.gst_applicable
+            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.doc_date,trans_main.party_name,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,states.name as state_name,trans_main.sales_type,trans_main.gstin,trans_main.party_state_code,trans_main.tax_class
             FROM trans_child 
             LEFT JOIN trans_main ON trans_main.id = trans_child.trans_main_id
             LEFT JOIN party_master on party_master.id = trans_main.party_id
-            LEFT JOIN states on party_master.state_id = states.id
+            LEFT JOIN states on trans_main.party_state_code = states.gst_statecode
             WHERE trans_child.is_delete = 0
-            AND trans_main.entry_type IN (".$data['entry_type'].")
+            AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
-            AND party_master.gst_type IN (1,2)
+            AND trans_main.gstin != 'URP'
+            AND trans_main.order_type IN (".$orderType.")
+            AND trans_main.trans_status != 3
             ".$party_id."
-            AND party_master.group_code = '".$group_code."'
             GROUP BY trans_child.gst_per,trans_main.trans_number
-            order by trans_main.trans_date,trans_main.trans_no ASC
+            ORDER BY trans_main.trans_date,trans_main.trans_no ASC
         ")->result();
 
         return $result;
@@ -140,22 +133,24 @@ class GstReportModel extends MasterModel{
 
     public function _cdnur($data){
         $party_id = (!empty($data['party_id']))?"and trans_main.party_id = ".$data['party_id']:"";
-        $group_code = ($data['report'] == "gstr1")?"SD":"SC";
+        $orderType = ($data['report'] == "gstr1")?"'Increase Sales','Decrease Sales','Sales Return'":"'Increase Purchase','Decrease Purchase','Purchase Return'";
+        $taxClass = ($data['report'] == 'gstr1')?"'SALESGSTACC','SALESIGSTACC','SALESJOBGSTACC','SALESJOBIGSTACC','SALESTFACC','SALESEXEMPTEDTFACC','EXPORTGSTACC','EXPORTTFACC'":"'PURURDGSTACC','PURURDIGSTACC','PURTFACC','PUREXEMPTEDTFACC'";
 
         $result = $this->db->query("
-            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.party_name,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,states.name as state_name,trans_main.sales_type,trans_main.doc_date,trans_main.gstin,SUBSTRING(trans_main.gstin,1,2) as gst_statecode,trans_main.gst_applicable
+            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.doc_date,trans_main.party_name,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,states.name as state_name,trans_main.sales_type,trans_main.gstin,states.gst_statecode as party_state_code,trans_main.tax_class
             FROM trans_child 
             LEFT JOIN trans_main ON trans_main.id = trans_child.trans_main_id
             LEFT JOIN party_master on party_master.id = trans_main.party_id
             LEFT JOIN states on party_master.state_id = states.id
             WHERE trans_child.is_delete = 0
-            AND trans_main.entry_type IN (".$data['entry_type'].")
+            AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
-            AND party_master.gst_type IN (3,4)
+            AND trans_main.gstin = 'URP'
+            AND trans_main.order_type IN (".$orderType.")
+            AND trans_main.trans_status != 3
             ".$party_id."
-            AND party_master.group_code = '".$group_code."'
             GROUP BY trans_child.gst_per,trans_main.trans_number
-            order by trans_main.trans_date,trans_main.trans_no ASC
+            ORDER BY trans_main.trans_date,trans_main.trans_no ASC
         ")->result();
 
         return $result;
