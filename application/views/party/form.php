@@ -6,7 +6,7 @@
 			<input type="hidden" name="party_type" value="<?=(!empty($dataRow->party_type))?$dataRow->party_type:$party_type?>" />
 			<input type="hidden" name="supplied_types" value="<?=(!empty($dataRow->supplied_types))?$dataRow->supplied_types:"1"?>" />
 
-            <div class="col-md-6 form-group">
+            <div class="<?=(!empty($party_category) && $party_category == 1)?"col-md-4":"col-md-6"?> form-group">
                 <label for="party_name">Company Name</label>
                 <input type="text" name="party_name" class="form-control text-capitalize req" value="<?=(!empty($dataRow->party_name))?$dataRow->party_name:""; ?>" />
             </div>
@@ -15,6 +15,7 @@
                 <label for="party_category">Party Category</label>
                 <select name="party_category" id="party_category" class="form-control select2 req">
                     <?php
+                        $party_category = (!empty($dataRow->party_category))?$dataRow->party_category:$party_category;
                         foreach($this->partyCategory as $key => $name):
                             if($key <= 3):
                                 $selected = (!empty($dataRow->party_category) && $dataRow->party_category == $key)?"selected":((!empty($party_category) && $party_category == $key)?"selected":"");
@@ -25,9 +26,23 @@
 				</select>
             </div>
 
-            <div class="col-md-3 form-group">
+            <div class="<?=(!empty($party_category) && $party_category == 1)?"col-md-2":"col-md-3"?> form-group">
                 <label for="party_code">Party Code</label>
                 <input type="text" name="party_code" id="party_code" class="form-control" value="<?= (!empty($dataRow->party_code)) ?$dataRow->party_code : $party_code; ?>" readonly/>
+            </div>
+
+            <div class="col-md-3 form-group <?=(!empty($party_category) && $party_category != 1)?"hidden":""?>">
+                <label for="brand_id">Brand</label>
+                <select id="brand" data-input_id="brand_id" class="form-control jp_multiselect req" multiple="multiple">
+                    <?php
+                        foreach($brandList as $row):
+                            $selected = (!empty($dataRow->brand_id) && in_array($row->id,explode(",",$dataRow->brand_id)))?"selected":"";
+                            echo '<option value="'.$row->id.'" '.$selected.'>'.$row->brand_name.'</option>';
+                        endforeach;
+                    ?>
+                </select>
+                <input type="hidden" name="brand_id" id="brand_id" value="<?=(!empty($dataRow->brand_id))?$dataRow->brand_id:""?>">
+                <div class="error brand_id"></div>
             </div>
 
             <div class="col-md-3 form-group">
@@ -132,7 +147,7 @@
 
             <div class="col-md-12 form-group">
                 <label for="party_address">Address</label>
-                <textarea name="party_address" class="form-control req" rows="3"><?=(!empty($dataRow->party_address))?$dataRow->party_address:""?></textarea>
+                <textarea name="party_address" class="form-control req" rows="2"><?=(!empty($dataRow->party_address))?$dataRow->party_address:""?></textarea>
             </div>
 
             <div class="col-md-3 form-group">
@@ -168,7 +183,7 @@
             
             <div class="col-md-12 form-group">
                 <label for="delivery_address">Delivery Address</label>
-                <textarea name="delivery_address" class="form-control" rows="3"><?=(!empty($dataRow->delivery_address))?$dataRow->delivery_address:""?></textarea>
+                <textarea name="delivery_address" class="form-control" rows="2"><?=(!empty($dataRow->delivery_address))?$dataRow->delivery_address:""?></textarea>
             </div>
 
             <!-- <div class="col-md-4 form-group">

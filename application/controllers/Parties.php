@@ -44,6 +44,7 @@ class Parties extends MY_Controller{
             $this->data['countryData'] = $this->party->getCountries();
             $this->data['party_code'] = $this->getPartyCode($data['party_category']);
             $this->data['salesExecutives'] = $this->employee->getEmployeeList();
+            $this->data['brandList'] = $this->brandMaster->getBrandList();
             $this->load->view($this->form, $this->data);
         else:
             $this->data['groupList'] = $this->party->getGroupList();
@@ -150,6 +151,11 @@ class Parties extends MY_Controller{
                 
         endif;
 
+        if($data['party_category'] == 1):
+            if(empty($data['brand_id']))
+                $errorMessage['brand_id'] = "Brand is required.";
+        endif;
+
         if (!empty($errorMessage)) :
             $this->printJson(['status' => 0, 'message' => $errorMessage]);
         else :
@@ -167,6 +173,7 @@ class Parties extends MY_Controller{
             $this->data['currencyData'] = $this->party->getCurrencyList();
             $this->data['countryData'] = $this->party->getCountries();
             $this->data['salesExecutives'] = $this->employee->getEmployeeList();
+            $this->data['brandList'] = $this->brandMaster->getBrandList();
             $this->load->view($this->form, $this->data);
         else:
             $this->data['groupList'] = $this->party->getGroupList();
