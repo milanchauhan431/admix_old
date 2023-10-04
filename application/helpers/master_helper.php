@@ -65,7 +65,7 @@ function getMasterDtHeader($page){
     $data['finish_goods'][] = ["name"=>"#","style"=>"width:5%;","sortable"=>"FALSE","textAlign"=>"center"]; 
     $data['finish_goods'][] = ["name"=>"Item Code"];
     $data['finish_goods'][] = ["name"=>"Item Name"];
-    $data['finish_goods'][] = ["name"=>"Category Name"];
+    /* $data['finish_goods'][] = ["name"=>"Category Name"]; */
     $data['finish_goods'][] = ["name"=>"Unit"];
     $data['finish_goods'][] = ["name"=>"Price"];
     $data['finish_goods'][] = ["name"=>"HSN Code"];
@@ -202,5 +202,9 @@ function getProductData($data){
 
     $action = getActionButton($editButton.$deleteButton);
 
-    return [$action,$data->sr_no,$data->item_code,$data->item_name,$data->category_name,$data->unit_name,floatVal($data->price),$data->hsn_code,floatVal($data->gst_per),floatVal($data->defualt_disc)];
+    if($data->item_type == 1):
+        return [$action,$data->sr_no,$data->item_code,$data->item_name,$data->unit_name,floatVal($data->price),$data->hsn_code,floatVal($data->gst_per),floatVal($data->defualt_disc)];
+    else:
+        return [$action,$data->sr_no,$data->item_code,$data->item_name,$data->category_name,$data->unit_name,floatVal($data->price),$data->hsn_code,floatVal($data->gst_per),floatVal($data->defualt_disc)];
+    endif;
 }

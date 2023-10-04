@@ -7,6 +7,7 @@ class ItemModel extends MasterModel{
     public function getDTRows($data){
         $data['tableName'] = $this->itemMaster;
         $data['select'] = "item_master.*,CAST(item_master.gst_per AS FLOAT) as gst_per,item_category.category_name,unit_master.unit_name";
+        
         $data['leftJoin']['item_category'] = "item_category.id  = item_master.category_id";
         $data['leftJoin']['unit_master'] = "unit_master.id  = item_master.unit_id";
 
@@ -17,7 +18,9 @@ class ItemModel extends MasterModel{
         $data['searchCol'][] = "";
         $data['searchCol'][] = "item_master.item_code";
         $data['searchCol'][] = "item_master.item_name";
-        $data['searchCol'][] = "item_category.category_name";
+        if($data['item_type'] != 1):
+            $data['searchCol'][] = "item_category.category_name";
+        endif;
         $data['searchCol'][] = "unit_master.unit_name";
         $data['searchCol'][] = "item_master.price";
         $data['searchCol'][] = "item_master.hsn_code";
