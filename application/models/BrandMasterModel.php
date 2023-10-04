@@ -58,8 +58,10 @@ class BrandMasterModel extends MasterModel{
         try{
             $this->db->trans_begin();
 
-            $checkData['columnName'] = ["brand_id"];
+            $checkData['columnName'] = ["brand_id","brand_ids"];
             $checkData['value'] = $id;
+            $checkData['notCheckCol'] = ["brand_ids"];
+            $checkData['table_condition']['party_master']['customWhere']['brand_ids'][] = "FIND_IN_SET(".$id.",party_master.brand_ids) > 0";
             $checkUsed = $this->checkUsage($checkData);
 
             if($checkUsed == true):

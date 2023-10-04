@@ -34,17 +34,17 @@
             </div>
 
             <div class="col-md-3 form-group <?=(!empty($party_category) && $party_category != 1)?"hidden":""?>">
-                <label for="brand_id">Brand</label>
-                <select id="brand" data-input_id="brand_id" class="form-control jp_multiselect req" multiple="multiple">
+                <label for="brand_ids">Brand</label>
+                <select id="brand" data-input_id="brand_ids" class="form-control jp_multiselect req" multiple="multiple">
                     <?php
                         foreach($brandList as $row):
-                            $selected = (!empty($dataRow->brand_id) && in_array($row->id,explode(",",$dataRow->brand_id)))?"selected":"";
+                            $selected = (!empty($dataRow->brand_ids) && in_array($row->id,explode(",",$dataRow->brand_ids)))?"selected":"";
                             echo '<option value="'.$row->id.'" '.$selected.'>'.$row->brand_name.'</option>';
                         endforeach;
                     ?>
                 </select>
-                <input type="hidden" name="brand_id" id="brand_id" value="<?=(!empty($dataRow->brand_id))?$dataRow->brand_id:""?>">
-                <div class="error brand_id"></div>
+                <input type="hidden" name="brand_ids" id="brand_ids" value="<?=(!empty($dataRow->brand_ids))?$dataRow->brand_ids:""?>">
+                <div class="error brand_ids"></div>
             </div>
 
             <div class="col-md-3 form-group">

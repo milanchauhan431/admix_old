@@ -149,8 +149,8 @@ class Parties extends MY_Controller{
         endif;
 
         if($data['party_category'] == 1):
-            if(empty($data['brand_id']))
-                $errorMessage['brand_id'] = "Brand is required.";
+            if(empty($data['brand_ids']))
+                $errorMessage['brand_ids'] = "Brand is required.";
         endif;
 
         if (!empty($errorMessage)) :

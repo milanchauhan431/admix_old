@@ -917,7 +917,14 @@ class MasterModel extends CI_Model{
             foreach($result as $row):
                 $queryData = array();
                 $queryData['tableName'] = $row->TABLE_NAME;
-                $queryData['where'][$row->COLUMN_NAME] = $postData['value'];
+
+                if(empty($postData['notCheckCol'])):
+                    $queryData['where'][$row->COLUMN_NAME] = $postData['value'];
+                else:
+                    if(!in_array($row->COLUMN_NAME,$postData['notCheckCol'])):
+                        $queryData['where'][$row->COLUMN_NAME] = $postData['value'];
+                    endif;
+                endif;
 
                 if(isset($postData['table_condition']) && !empty($postData['table_condition'])):
                     if(array_key_exists($row->TABLE_NAME, $postData['table_condition'])):
@@ -940,6 +947,11 @@ class MasterModel extends CI_Model{
                             endforeach;
                         endif;
 
+                        if(!empty($postData['table_condition'][$row->TABLE_NAME]['customWhere']) && array_key_exists($row->COLUMN_NAME, $postData['table_condition'][$row->TABLE_NAME]['customWhere'])):
+                            foreach($postData['table_condition'][$row->TABLE_NAME]['customWhere'][$row->COLUMN_NAME] as $key=>$value):
+                                $queryData['customWhere'][] = $value;
+                            endforeach;
+                        endif;
                     endif;
                 endif;
 
