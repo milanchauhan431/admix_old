@@ -1393,6 +1393,35 @@ class GstReport extends MY_Controller{
     }
 
     public function exp($data){
+        $data['vou_name_s'] = "'Sale'";
+        $result=$this->gstReport->_exp($data);
+
+        $no_of_invoice = $total_invoice_value = $total_taxable_value = $total_cess = 0;
+        $transMainId = array(); $html = $tbody = '';
+        foreach($result as $row):
+            $tbody .= '<tr>
+                <td class="text-left">'.(($row->tax_class == "EXPORTGSTACC")?"WPAY":"WOPAY").'</td>
+                <td class="text-left">'.$row->trans_number.'</td>
+                <td class="text-left">'.date("d-M-Y",strtotime($row->trans_date)).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->net_amount).'</td>
+                <td class="text-left">'.$row->port_code.'</td>
+                <td class="text-left">'.$row->ship_bill_no.'</td>
+                <td class="text-left">'.date("d-M-Y",strtotime($row->ship_bill_date)).'</td>
+                <td class="text-left">'.sprintf("%.2F",$row->gst_per).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->taxable_amount).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->cess_amount).'</td>
+            </tr>';
+
+            if(!in_array($row->id,$transMainId)):
+                $transMainId[] = $row->id;
+                ++$no_of_invoice;
+                $total_invoice_value += $row->net_amount;
+            endif;
+
+            $total_taxable_value += $row->taxable_amount;
+            $total_cess += $row->cess_amount;
+        endforeach;
+
         $html = '';
         $html .= '<thead class="thead-info text-center">
             <tr>
@@ -1412,15 +1441,15 @@ class GstReport extends MY_Controller{
             </tr>
             <tr>
                 <td></td>
-                <td>0</td>
+                <td>'.$no_of_invoice.'</td>
                 <td></td>
-                <td>0</td>
+                <td>'.$total_invoice_value.'</td>
                 <td></td>
-                <td>0</td>
+                <td>'.$no_of_invoice.'</td>
                 <td></td>
                 <td></td>
-                <td>0</td>
-                <td>0</td>
+                <td>'.$total_taxable_value.'</td>
+                <td>'.$total_cess.'</td>
             </tr>
             <tr>
                 <th>Export Type</th>
@@ -1434,7 +1463,7 @@ class GstReport extends MY_Controller{
                 <th>Taxable Value</th>
                 <th>Cess Amount</th>
             </tr>
-        </thead>';
+        </thead><tbody>'.$tbody.'</tbody>';
         return ['status'=>1,'html'=>$html];
     }
 
@@ -1537,8 +1566,8 @@ class GstReport extends MY_Controller{
                 <tr>
                     <td></td>
                     <td></td>
-                    <td>'.sprintf("%.2F",$total_value).'</td>
-                    <td>'.sprintf("%.2F",$total_cess).'</td>
+                    <td>0.00</td>
+                    <td>0.00</td>
                 </tr>
                 <tr>
                     <th>Place Of Supply</th>
@@ -1687,10 +1716,25 @@ class GstReport extends MY_Controller{
         return ['status'=>1,'html'=>$html];
     }
 
-    public function exemp($data){
-        $html = '';
-
+    public function exemp($data){        
+        $result = $this->gstReport->_exemp($data);
+        
+        $totalComposition = $totalNillRated = $totaExempted = $totalNonGst = 0;
+        $html = $tbody = '';
         if($data['report'] == "gstr1"):
+            foreach($result as $row):
+                $tbody .= '<tr>
+                    <td>'.$row->description.'</td>
+                    <td>'.sprintf("%.2F",$row->nill_rate_amount).'</td>
+                    <td>'.sprintf("%.2F",$row->exe_amount).'</td>
+                    <td>'.sprintf("%.2F",$row->non_gst_amount).'</td>
+                </tr>';
+
+                $totalNillRated += $row->nill_rate_amount;
+                $totaExempted += $row->exe_amount;
+                $totalNonGst += $row->non_gst_amount;
+            endforeach;
+
             $html .= '<thead class="thead-info text-center">
                 <tr>
                     <th colspan="5">Summary For Nil rated, exempted and non GST outward supplies (8)</th>
@@ -1703,9 +1747,9 @@ class GstReport extends MY_Controller{
                 </tr>
                 <tr>
                     <td></td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td>'.$totalNillRated.'</td>
+                    <td>'.$totaExempted.'</td>
+                    <td>'.$totalNonGst.'</td>
                 </tr>
                 <tr>
                     <th>Description</th>
@@ -1713,25 +1757,40 @@ class GstReport extends MY_Controller{
                     <th>Exempted(other than nil rated/non GST supply)</th>
                     <th>Non-GST supplies</th>
                 </tr>
-            </thead>';
+            </thead><tbody>'.$tbody.'</tbody>';
         else:
+            foreach($result as $row):
+                $tbody .= '<tr>
+                    <td>'.$row->description.'</td>
+                    <td>'.sprintf("%.2F",$row->compo_amount).'</td>
+                    <td>'.sprintf("%.2F",$row->nill_rate_amount).'</td>
+                    <td>'.sprintf("%.2F",$row->exe_amount).'</td>
+                    <td>'.sprintf("%.2F",$row->non_gst_amount).'</td>
+                </tr>';
+
+                $totalComposition += $row->compo_amount;
+                $totalNillRated += $row->nill_rate_amount;
+                $totaExempted += $row->exe_amount;
+                $totalNonGst += $row->non_gst_amount;
+            endforeach;
+
             $html .= '<thead class="thead-info text-center">
                 <tr>
                     <th colspan="5">Summary For Composition,Nil rated,exempted and non GST inward supplies</th>
                 </tr>
                 <tr>
                     <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <th>Total Composition taxable person</th>
+                    <th>Total Nil Rated Supplies</th>
+                    <th>Total Exempted Supplies</th>
+                    <th>Total Non-GST Supplies</th>
                 </tr>
                 <tr>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>'.$totalComposition.'</td>
+                    <td>'.$totalNillRated.'</td>
+                    <td>'.$totaExempted.'</td>
+                    <td>'.$totalNonGst.'</td>
                 </tr>
                 <tr>
                     <th>Description</th>
@@ -1740,29 +1799,13 @@ class GstReport extends MY_Controller{
                     <th>Exempted (other than nil rated/non GST supply )</th>
                     <th>Non-GST supplies</th>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Inter-State supplies</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                </tr>
-                <tr>
-                    <td>Intra-State supplies</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                    <td>0.00</td>
-                </tr>
-            </tbody>';
+            </thead><tbody>'.$tbody.'</tbody>';
         endif;
         return ['status'=>1,'html'=>$html];
     }
 
     public function hsn($data){
-        $data['entry_type'] = ($data['report'] == "gstr1")?'6,7,8,13,19':'12,14,18';
+        $data['vou_name_s'] = ($data['report'] == "gstr1")?"'Sale','GInc','C.N.','D.N.'":"'Purc','GExp','C.N.','D.N.'";
         $result=$this->gstReport->_hsn($data);
 
         $total_taxable_value = 0;
@@ -1907,13 +1950,14 @@ class GstReport extends MY_Controller{
     }
 
     public function docs($data){
-        $data['entry_type']='6,7,8,13,14,19';//6,7,8,13,14
+        $data['vou_name_s']="'Sales','GInc','C.N.','D.N.'";//'6,7,8,13,14,19';//6,7,8,13,14
         $result=$this->gstReport->_docs($data);
         $total_number = 0;
         $total_cancelled = 0;
 
         if(!empty($result)):
             $total_number = (!empty($result))?array_sum(array_column($result,'total_inv')):0;
+            $total_cancelled = (!empty($result))?array_sum(array_column($result,'total_cnl_inv')):0;
         endif;
 
         $html = '';
@@ -1945,7 +1989,7 @@ class GstReport extends MY_Controller{
         </thead>';
         foreach($result as $row):
             $html .= '<tr>
-                <td class="text-left">Invoices for outward supply</td>
+                <td class="text-left">'.$row->document.'</td>
                 <td class="text-left">'.$row->trans_prefix.$row->min_trans_no.'</td>
                 <td class="text-left">'.$row->trans_prefix.$row->max_trans_no.'</td>
                 <td class="text-right">'.$row->total_inv.'</td>
@@ -1956,6 +2000,8 @@ class GstReport extends MY_Controller{
     }
 
     public function imps($data){
+        $data['vou_name_s'] = "'Purc','GExp'";
+        $result=$this->gstReport->_imps($data);
         $html = '';
         $html .= '<thead class="thead-info text-center">
             <tr>
