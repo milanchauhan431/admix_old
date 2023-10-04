@@ -2003,6 +2003,41 @@ class GstReport extends MY_Controller{
         $data['vou_name_s'] = "'Purc','GExp'";
         $result=$this->gstReport->_imps($data);
         $html = '';
+
+        $no_of_recipients = $no_of_invoice = $total_invoice_value = $total_taxable_value = 0;
+        $total_igst_amount = $total_cgst_amount = $total_sgst_amount = $total_cess = 0;
+        $total_aigst_amount = $total_acgst_amount = $total_asgst_amount = $total_acess = 0;
+
+        $html = '';
+        $transMainId = array(); $tbody = '';
+        foreach($result as $row):
+
+            $tbody .= '<tr>
+                <td class="text-center">'.$row->trans_number.'</td>
+                <td class="text-center">'.date("d-M-Y",strtotime($row->trans_date)).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->net_amount).'</td>
+                <td class="text-left">'.$row->party_state_code.'-'.$row->state_name.'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->gst_per).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->taxable_amount).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->igst_amount).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->cess_amount).'</td>
+                <td class="text-left">'.$row->itc.'</td>
+                <td class="text-right">0.00</td>
+                <td class="text-right">0.00</td>
+            </tr>';
+
+            if(!in_array($row->id,$transMainId)):
+                $transMainId[] = $row->id;
+                ++$no_of_recipients;
+                ++$no_of_invoice;
+                $total_invoice_value += $row->net_amount;
+            endif;
+
+            $total_taxable_value += $row->taxable_amount;
+            $total_igst_amount += $row->igst_amount;
+            $total_cess += $row->cess_amount;
+        endforeach;
+
         $html .= '<thead class="thead-info text-center">
             <tr>
                 <th colspan="11">Summary For IMPS(4C)</th>
@@ -2023,12 +2058,12 @@ class GstReport extends MY_Controller{
             <tr>
                 <td></td>
                 <td></td>
-                <td>0.00</td>
+                <td>'.$total_invoice_value.'</td>
                 <td></td>
                 <td></td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>0.00</td>
+                <td>'.$total_taxable_value.'</td>
+                <td>'.$total_igst_amount.'</td>
+                <td>'.$total_cess.'</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -2046,12 +2081,52 @@ class GstReport extends MY_Controller{
                 <th>Availed ITC Integrated Tax</th>
                 <th>Availed ITC Cess</th>
             </tr>
-        </thead>';
+        </thead><tbody>'.$tbody.'</tbody>';
+
         return ['status'=>1,'html'=>$html];
     }
 
     public function impg($data){
+        $data['vou_name_s'] = "'Purc','GExp'";
+        $result=$this->gstReport->_impg($data);
         $html = '';
+
+        $no_of_recipients = $no_of_invoice = $total_invoice_value = $total_taxable_value = 0;
+        $total_igst_amount = $total_cgst_amount = $total_sgst_amount = $total_cess = 0;
+        $total_aigst_amount = $total_acgst_amount = $total_asgst_amount = $total_acess = 0;
+
+        $html = '';
+        $transMainId = array(); $tbody = '';
+        foreach($result as $row):
+
+            $tbody .= '<tr>
+                <td class="text-left">'.$row->port_code.'</td>
+                <td class="text-left">'.$row->trans_number.'</td>
+                <td class="text-left">'.date("d-M-Y",strtotime($row->trans_date)).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->net_amount).'</td>
+                <td class="text-left">'.(($row->tax_class == "IMPORTACC")?"Imports":"Received from SEZ").'</td>
+                <td class="text-left">'.$row->gstin.'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->gst_per).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->taxable_amount).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->igst_amount).'</td>
+                <td class="text-right">'.sprintf("%.2F",$row->cess_amount).'</td>
+                <td class="text-left">'.$row->itc.'</td>
+                <td class="text-right">0.00</td>
+                <td class="text-right">0.00</td>
+            </tr>';
+
+            if(!in_array($row->id,$transMainId)):
+                $transMainId[] = $row->id;
+                ++$no_of_recipients;
+                ++$no_of_invoice;
+                $total_invoice_value += $row->net_amount;
+            endif;
+
+            $total_taxable_value += $row->taxable_amount;
+            $total_igst_amount += $row->igst_amount;
+            $total_cess += $row->cess_amount;
+        endforeach;
+
         $html .= '<thead class="thead-info text-center">
             <tr>
                 <th colspan="13">Summary For IMPG(5)</th>
@@ -2075,12 +2150,12 @@ class GstReport extends MY_Controller{
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>0.00</td>
+                <td>'.$total_invoice_value.'</td>
                 <td></td>
                 <td></td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>0.00</td>
+                <td>'.$total_taxable_value.'</td>
+                <td>'.$total_igst_amount.'</td>
+                <td>'.$total_cess.'</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -2101,7 +2176,7 @@ class GstReport extends MY_Controller{
                 <th>Availed ITC Integrated Tax</th>
                 <th>Availed ITC Cess</th>
             </tr>
-        </thead>';
+        </thead><tbody>'.$tbody.'</tbody>';
         return ['status'=>1,'html'=>$html];
     }
 

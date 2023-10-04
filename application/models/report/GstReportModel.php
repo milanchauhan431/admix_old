@@ -14,6 +14,7 @@ class GstReportModel extends MasterModel{
             AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
             AND trans_main.gstin != 'URP'
+            AND trans_main.tax_class NOT IN ('IMPORTACC','IMPORTSACC','SEZRACC','EXPORTGSTACC','EXPORTTFACC')
             AND trans_main.trans_status != 3
             ".$party_id."
             GROUP BY trans_child.gst_per,trans_main.trans_no
@@ -35,7 +36,7 @@ class GstReportModel extends MasterModel{
             WHERE trans_child.is_delete = 0
             AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
-            AND trans_main.tax_class NOT IN ('IMPORTACC','IMPORTSACC','EXPORTGSTACC','EXPORTTFACC')
+            AND trans_main.tax_class NOT IN ('IMPORTACC','IMPORTSACC','SEZRACC','EXPORTGSTACC','EXPORTTFACC')
             AND trans_main.gstin = 'URP'
             AND trans_main.trans_status != 3
             ".$party_id."
@@ -63,7 +64,7 @@ class GstReportModel extends MasterModel{
             AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
             AND trans_main.gstin = 'URP'
-            AND trans_main.tax_class NOT IN ('IMPORTACC','IMPORTSACC','EXPORTGSTACC','EXPORTTFACC')
+            AND trans_main.tax_class NOT IN ('IMPORTACC','IMPORTSACC','SEZRACC','EXPORTGSTACC','EXPORTTFACC')
             AND trans_main.trans_status != 3
             ".$party_id."
             AND trans_main.taxable_amount > 250000
@@ -91,7 +92,7 @@ class GstReportModel extends MasterModel{
             AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
             AND trans_main.gstin = 'URP'
-            AND trans_main.tax_class NOT IN ('IMPORTACC','IMPORTSACC','EXPORTGSTACC','EXPORTTFACC')
+            AND trans_main.tax_class NOT IN ('IMPORTACC','IMPORTSACC','SEZRACC','EXPORTGSTACC','EXPORTTFACC')
             AND trans_main.trans_status != 3
             ".$party_id."
             AND trans_main.taxable_amount <= 250000
@@ -388,7 +389,7 @@ class GstReportModel extends MasterModel{
         $party_id = (!empty($data['party_id']))?"and trans_main.party_id = ".$data['party_id']:"";
 
         $result = $this->db->query("
-            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.doc_date,trans_main.party_name,trans_main.gstin,trans_main.tax_class,trans_main.port_code,trans_main.ship_bill_no,trans_main.ship_bill_date,trans_main.sales_type,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,trans_main.itc,states.name as state_name
+            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.doc_date,trans_main.party_name,trans_main.gstin,trans_main.tax_class,trans_main.port_code,trans_main.ship_bill_no,trans_main.ship_bill_date,trans_main.sales_type,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,trans_main.itc,states.name as state_name,trans_main.party_state_code
             FROM trans_child 
             LEFT JOIN trans_main ON trans_main.id = trans_child.trans_main_id
             LEFT JOIN party_master on party_master.id = trans_main.party_id
@@ -396,7 +397,6 @@ class GstReportModel extends MasterModel{
             WHERE trans_child.is_delete = 0
             AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
             AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
-            AND trans_main.gstin = 'URP'
             AND trans_main.tax_class IN ('IMPORTSACC')
             AND trans_main.trans_status != 3
             ".$party_id."
@@ -408,7 +408,25 @@ class GstReportModel extends MasterModel{
     }
 
     public function _impg($data){
-        return array();
+        $party_id = (!empty($data['party_id']))?"and trans_main.party_id = ".$data['party_id']:"";
+
+        $result = $this->db->query("
+            SELECT trans_main.id,trans_main.entry_type,trans_main.trans_number,trans_main.trans_prefix,trans_main.trans_no,trans_main.doc_no,trans_main.trans_date,trans_main.doc_date,trans_main.party_name,trans_main.gstin,trans_main.tax_class,trans_main.port_code,trans_main.ship_bill_no,trans_main.ship_bill_date,trans_main.sales_type,trans_main.net_amount,trans_main.vou_name_s,trans_main.gst_type,trans_child.hsn_code,trans_child.gst_per,SUM(trans_child.taxable_amount) as taxable_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.cgst_amount ELSE 0 END) as cgst_amount,SUM(CASE WHEN trans_main.gst_type = 1 THEN trans_child.sgst_amount ELSE 0 END) as sgst_amount,SUM(CASE WHEN trans_main.gst_type = 2 THEN trans_child.igst_amount ELSE 0 END) as igst_amount,SUM(trans_child.cess_amount) as cess_amount,trans_main.itc,states.name as state_name,trans_main.party_state_code
+            FROM trans_child 
+            LEFT JOIN trans_main ON trans_main.id = trans_child.trans_main_id
+            LEFT JOIN party_master on party_master.id = trans_main.party_id
+            LEFT JOIN states on trans_main.party_state_code = states.gst_statecode
+            WHERE trans_child.is_delete = 0
+            AND trans_main.vou_name_s IN (".$data['vou_name_s'].")
+            AND trans_main.trans_date BETWEEN '".$data['from_date']."' AND '".$data['to_date']."'
+            AND trans_main.tax_class IN ('IMPORTACC','SEZRACC')
+            AND trans_main.trans_status != 3
+            ".$party_id."
+            GROUP BY trans_child.gst_per,trans_main.trans_number
+            ORDER BY trans_main.trans_date,trans_main.trans_no ASC
+        ")->result();
+        
+        return $result;
     }
 
     public function _itcr($data){
