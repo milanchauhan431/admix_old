@@ -13,11 +13,11 @@ class GateInward extends MY_Controller{
     }
 
     public function index(){
-        $this->data['tableHeader'] = getStoreDtHeader("pendingGE");
+        $this->data['tableHeader'] = getStoreDtHeader("gateInward");
 		$this->load->view($this->indexPage,$this->data);
     }
 
-    public function getDTRows($type = 1,$status = 0){
+    public function getDTRows($type = 2,$status = 0){
         $data = $this->input->post();
         $data['trans_type'] = $type;
         $data['trans_status'] = $status;
@@ -50,7 +50,7 @@ class GateInward extends MY_Controller{
     }
 
     public function addGateInward(){
-        $this->data['partyList'] = $this->party->getPartyList(['party_category'=>[1,2,3]]);
+        $this->data['partyList'] = $this->party->getPartyList(['party_category'=>[2,3]]);
         $this->data['itemList'] = $this->item->getItemList();
         $this->data['locationList'] = $this->storeLocation->getStoreLocationList(['store_type'=>'0,15','final_location'=>1]);
         $this->data['materialGradeList'] = $this->materialGrade->getMaterialGrades();
@@ -120,7 +120,7 @@ class GateInward extends MY_Controller{
     public function edit(){
         $data = $this->input->post();
         $gateInward = $this->gateInward->getGateInward($data['id']);
-        $this->data['partyList'] = $this->party->getPartyList(['party_category'=>[1,2,3]]);
+        $this->data['partyList'] = $this->party->getPartyList(['party_category'=>[2,3]]);
         $this->data['itemList'] = $this->item->getItemList();
         $this->data['locationList'] = $this->storeLocation->getStoreLocationList(['store_type'=>'0,15','final_location'=>1]);
         $this->data['gateInwardData'] = $gateInward;
