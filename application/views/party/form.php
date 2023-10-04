@@ -4,7 +4,10 @@
             <input type="hidden" name="id" id="id" value="<?=(!empty($dataRow->id))?$dataRow->id:""; ?>" />
 			<input type="hidden" name="disc_per" value="<?=(!empty($dataRow->disc_per))?$dataRow->disc_per:""?>" />
 			<input type="hidden" name="party_type" value="<?=(!empty($dataRow->party_type))?$dataRow->party_type:$party_type?>" />
-			<input type="hidden" name="supplied_types" value="<?=(!empty($dataRow->supplied_types))?$dataRow->supplied_types:"1"?>" />
+
+            <?php
+                $party_category = (!empty($dataRow->party_category))?$dataRow->party_category:$party_category;
+            ?>
 
             <div class="<?=(!empty($party_category) && $party_category == 1)?"col-md-4":"col-md-6"?> form-group">
                 <label for="party_name">Company Name</label>
@@ -14,8 +17,7 @@
 			<div class="col-md-2 form-group hidden">
                 <label for="party_category">Party Category</label>
                 <select name="party_category" id="party_category" class="form-control select2 req">
-                    <?php
-                        $party_category = (!empty($dataRow->party_category))?$dataRow->party_category:$party_category;
+                    <?php                        
                         foreach($this->partyCategory as $key => $name):
                             if($key <= 3):
                                 $selected = (!empty($dataRow->party_category) && $dataRow->party_category == $key)?"selected":((!empty($party_category) && $party_category == $key)?"selected":"");

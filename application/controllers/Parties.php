@@ -128,9 +128,6 @@ class Parties extends MY_Controller{
 
         if($data['party_category'] != 4):
        
-            if (empty($data['supplied_types']))
-                $errorMessage['supplied_types'] = 'Supplied Types are required.';
-
             if (empty($data['gstin']) && in_array($data['registration_type'],[1,2]))
                 $errorMessage['gstin'] = 'Gstin is required.';
 
