@@ -70,6 +70,10 @@ $(document).ready(function(){
             $(".price").html("Price is required.");
         }
 
+		if(formData.cod_date < $("#trans_date").val()){
+			$(".cod_date").html("Invalid Date.");
+		}
+
         /* var item_ids = $(".item_id").map(function () { return $(this).val(); }).get();
         if ($.inArray(formData.item_id, item_ids) >= 0 && formData.row_index == "") {
             $(".item_name").html("Item already added.");
@@ -295,6 +299,11 @@ function AddRow(data) {
 	cell = $(row.insertCell(-1));
 	cell.html(data.item_remark);
 	cell.append(itemRemarkInput);
+
+	var codDateInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][cod_date]", value: data.cod_date });
+	cell = $(row.insertCell(-1));
+	cell.html(((data.cod_date != null)?formatDate(data.cod_date,'d-m-Y'):""));
+	cell.append(codDateInput);
 
 	/* cell = $(row.insertCell(-1));
 	var filePostData = {"index":countRow,"inputName":"itemData["+countRow+"][attachment]","inputStatus":"itemData["+countRow+"][attachment_status]","file":((data.attachment != "")?base_url+"assets/uploads/sales_order/"+data.attachment:""),"fileName":((data.attachment != "")?data.attachment:"")};

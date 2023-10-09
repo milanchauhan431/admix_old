@@ -138,6 +138,7 @@
                                                         <th class="amountCol">Amount</th>
                                                         <th class="netAmtCol">Amount</th>
                                                         <th>Remark</th>
+                                                        <th>Delivery Date</th>
                                                         <!-- <th class="text-center">Attachment</th> -->
                                                         <th class="text-center" style="width:10%;">Action</th>
                                                     </tr>
@@ -237,7 +238,7 @@
                                 <label for="price">Price</label>
                                 <input type="text" name="price" id="price" class="form-control floatOnly req" value="0" />
                             </div>
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-3 form-group">
                                 <label for="unit_id">Unit</label>        
                                 <select name="unit_id" id="unit_id" class="form-control select2">
                                     <option value="">Select Unit</option>
@@ -245,14 +246,14 @@
                                 </select> 
                                 <input type="hidden" name="unit_name" id="unit_name" class="form-control" value="" />                       
                             </div>
-							<div class="col-md-4 form-group">
+							<div class="col-md-3 form-group">
                                 <label for="hsn_code">HSN Code</label>
                                 <select name="hsn_code" id="hsn_code" class="form-control select2">
                                     <option value="">Select HSN Code</option>
                                     <?=getHsnCodeListOption($hsnList)?>
                                 </select>
                             </div>
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-3 form-group">
                                 <label for="gst_per">GST Per.(%)</label>
                                 <select name="gst_per" id="gst_per" class="form-control select2">
                                     <?php
@@ -261,6 +262,10 @@
                                         endforeach;
                                     ?>
                                 </select>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <label for="cod_date">Delivery Date</label>
+                                <input type="date" name="cod_date" id="cod_date" class="form-control" min="<?=date("Y-m-d")?>" value="">
                             </div>
                             <div class="col-md-12 form-group">
                                 <label for="item_remark">Remark</label>
