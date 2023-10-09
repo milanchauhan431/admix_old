@@ -19,16 +19,26 @@ class AccountingReport extends MY_Controller{
 
     public function getSalesRegisterData(){
         $data = $this->input->post();
-        $result = $this->accountReport->getRegisterData($data);
+        $result = ($data['report_type'] == 1)?$this->accountReport->getRegisterData($data):$this->accountReport->getRegisterDataItemWise($data);
 
         $thead = '<tr>
             <th>#</th>
             <th>Inv Date</th>
             <th>Inv No.</th>
             <th>Party Name</th>
-            <th>Gst No.</th>
-            <th>Total Amount</th>
-            <th>Disc. Amount</th>
+            <th>Gst No.</th>';
+
+        if($data['report_type'] == 2):
+            $thead .= '<th>Item Name</th>';
+            $thead .= '<th>Brand Name</th>';
+            $thead .= '<th>Qty.</th>';
+            $thead .= '<th>Price</th>';
+            $thead .= '<th>Amount</th>';
+        else:
+            $thead .= '<th>Total Amount</th>';
+        endif;
+
+        $thead .= '<th>Disc. Amount</th>
             <th>Taxable Amount</th>
             <th>CGST Amount</th>
             <th>SGST Amount</th>
@@ -40,35 +50,94 @@ class AccountingReport extends MY_Controller{
         $tbody = ''; $i =1;
         
         $totalAmount = $totalDiscAmount = $totalTaxableAmount = $totalCgstAmount = $totalSgstAmount = $totalIgstAmount = $totalOtherAmount = $totalNetAmount = 0;
-        foreach($result as $row):
-            $tbody .= '<tr>
-                <td>'.$i++.'</td>
-                <td>'.formatDate($row->trans_date).'</td>
-                <td>'.$row->trans_number.'</td>
-                <td class="text-left">'.$row->party_name.'</td>
-                <td class="text-left">'.$row->gstin.'</td>
-                <td>'.floatVal($row->total_amount).'</td>
-                <td>'.floatVal($row->disc_amount).'</td>
-                <td>'.floatVal($row->taxable_amount).'</td>
-                <td>'.floatVal($row->cgst_amount).'</td>
-                <td>'.floatVal($row->sgst_amount).'</td>
-                <td>'.floatVal($row->igst_amount).'</td>
-                <td>'.floatVal($row->other_amount).'</td>
-                <td>'.floatVal($row->net_amount).'</td>
-            </tr>';
 
-            $totalAmount += $row->total_amount;
-            $totalDiscAmount += $row->disc_amount;
-            $totalTaxableAmount += $row->taxable_amount;
-            $totalCgstAmount += $row->cgst_amount;
-            $totalSgstAmount += $row->sgst_amount;
-            $totalIgstAmount += $row->igst_amount;
-            $totalOtherAmount += $row->other_amount;
-            $totalNetAmount += $row->net_amount;
-        endforeach;
+        if($data['report_type'] == 1):
+            foreach($result as $row):
+                $tbody .= '<tr>
+                    <td>'.$i++.'</td>
+                    <td>'.formatDate($row->trans_date).'</td>
+                    <td>'.$row->trans_number.'</td>
+                    <td class="text-left">'.$row->party_name.'</td>
+                    <td class="text-left">'.$row->gstin.'</td>
+                    <td>'.floatVal($row->total_amount).'</td>
+                    <td>'.floatVal($row->disc_amount).'</td>
+                    <td>'.floatVal($row->taxable_amount).'</td>
+                    <td>'.floatVal($row->cgst_amount).'</td>
+                    <td>'.floatVal($row->sgst_amount).'</td>
+                    <td>'.floatVal($row->igst_amount).'</td>
+                    <td>'.floatVal($row->other_amount).'</td>
+                    <td>'.floatVal($row->net_amount).'</td>
+                </tr>';
+
+                $totalAmount += $row->total_amount;
+                $totalDiscAmount += $row->disc_amount;
+                $totalTaxableAmount += $row->taxable_amount;
+                $totalCgstAmount += $row->cgst_amount;
+                $totalSgstAmount += $row->sgst_amount;
+                $totalIgstAmount += $row->igst_amount;
+                $totalOtherAmount += $row->other_amount;
+                $totalNetAmount += $row->net_amount;
+            endforeach;
+        else:
+            $rowspan = 0;$transMainIds = array();
+            foreach($result as $row):
+                if(!in_array($row->id,$transMainIds)):
+                    $transMainIds[] = $row->id;
+                    $tbody .= '<tr>
+                        <td>'.$i++.'</td>
+                        <td>'.formatDate($row->trans_date).'</td>
+                        <td>'.$row->trans_number.'</td>
+                        <td class="text-left">'.$row->party_name.'</td>
+                        <td class="text-left">'.$row->gstin.'</td>
+                        <td class="text-left">'.$row->item_name.'</td>
+                        <td class="text-left">'.$row->brand_name.'</td>
+                        <td>'.floatVal($row->qty).'</td>
+                        <td>'.floatVal($row->price).'</td>
+                        <td>'.floatVal($row->amount).'</td>
+                        <td>'.floatVal($row->disc_amount).'</td>
+                        <td>'.floatVal($row->taxable_amount).'</td>
+                        <td>'.floatVal($row->cgst_amount).'</td>
+                        <td>'.floatVal($row->sgst_amount).'</td>
+                        <td>'.floatVal($row->igst_amount).'</td>
+                        <td>'.floatVal($row->other_amount).'</td>
+                        <td>'.floatVal($row->net_amount).'</td>
+                    </tr>';
+
+                    $totalOtherAmount += $row->other_amount;
+                    $totalNetAmount += $row->net_amount;
+                else:
+                    $tbody .= '<tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-left">'.$row->item_name.'</td>
+                        <td class="text-left">'.$row->brand_name.'</td>
+                        <td>'.floatVal($row->qty).'</td>
+                        <td>'.floatVal($row->price).'</td>
+                        <td>'.floatVal($row->amount).'</td>
+                        <td>'.floatVal($row->disc_amount).'</td>
+                        <td>'.floatVal($row->taxable_amount).'</td>
+                        <td>'.floatVal($row->cgst_amount).'</td>
+                        <td>'.floatVal($row->sgst_amount).'</td>
+                        <td>'.floatVal($row->igst_amount).'</td>
+                        <td></td>
+                        <td></td>
+                    </tr>';
+                endif;
+
+                $totalAmount += $row->amount;
+                $totalDiscAmount += $row->disc_amount;
+                $totalTaxableAmount += $row->taxable_amount;
+                $totalCgstAmount += $row->cgst_amount;
+                $totalSgstAmount += $row->sgst_amount;
+                $totalIgstAmount += $row->igst_amount;
+            endforeach;
+        endif;
 
         $tfoot = '<tr>
-            <th colspan="5" class="text-right">Total</th>
+            <th colspan="'.(($data['report_type'] == 1)?5:9).'" class="text-right">Total</th>
             <th>'.floatVal($totalAmount).'</th>
             <th>'.floatVal($totalDiscAmount).'</th>
             <th>'.floatVal($totalTaxableAmount).'</th>

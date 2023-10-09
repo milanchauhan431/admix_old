@@ -279,21 +279,29 @@ function reportTable(tableId = "reportTable",tableOptions = ""){
 	if(tableOptions == ""){
 		tableOptions = {
 			responsive: true,
+			"scrollY": '52vh',
+			"scrollX": true,
+			deferRender: true,
+			scroller: true,
+			destroy: true,
 			"autoWidth" : false,
-			order:[],
+			order: [],
 			"columnDefs": [
-				{ type: 'natural', targets: 0 },
-				{ orderable: false, targets: "_all" }, 
-				{ className: "text-left", targets: [0,1] }, 
-				{ className: "text-center", "targets": "_all" } 
+				{type: 'natural',targets: 0},
+				{orderable: false,targets: "_all"},
+				{className: "text-center",targets: [0, 1]},
+				{className: "text-center","targets": "_all"}
 			],
-			pageLength:25,
-			language: { search: "" },
+			pageLength: 25,
+			language: {search: ""},
 			lengthMenu: [
-				[ 10, 25, 50, 100, -1 ],[ '10 rows', '25 rows', '50 rows', '100 rows', 'Show all' ]
+				[ 10, 20, 25, 50, 75, 100, 250, -1 ],
+				[ '10 rows', '20 rows', '25 rows', '50 rows', '75 rows', '100 rows','250 rows', 'Show all' ]
 			],
-			dom: "<'row'<'col-sm-7'B><'col-sm-5'f>>" +"<'row'<'col-sm-12't>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-			buttons: [ 'pageLength', 'excel', {text: 'Refresh',action: function (){$(".refreshReportData").trigger('click');} }]
+			dom: "<'row'<'col-sm-7'B><'col-sm-5'f>>" + "<'row'<'col-sm-12't>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+			buttons: [ 'pageLength', 'excel', {text: 'Refresh',action: function (){$(".refreshReportData").trigger('click');} }],
+			"fnInitComplete":function(){ $('.dataTables_scrollBody').perfectScrollbar(); },
+    		"fnDrawCallback": function() { $('.dataTables_scrollBody').perfectScrollbar('destroy').perfectScrollbar(); }
 		};
 	}
 
@@ -307,7 +315,7 @@ function reportTable(tableId = "reportTable",tableOptions = ""){
 	$('.btn-group>.btn:first-child').css("border-bottom-right-radius","0");
 
 	setTimeout(function(){ reportTable.columns.adjust().draw();}, 10);
-	$('.page-wrapper').resizer(function() { reportTable.columns.adjust().draw(); });
+	//$('.page-wrapper').resizer(function() { reportTable.columns.adjust().draw(); });
 
 	return reportTable;
 }
