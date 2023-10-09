@@ -23,7 +23,7 @@ class MY_Controller extends CI_Controller{
 	public $itemTypes = [1 => "Finish Goods", 2 => "Consumable", 3 => "Raw Material"/* , 4 => "Capital Goods", 5 => "Machineries", 6 => "Instruments", 7 => "Gauges", 8 => "Services", 9 => "Packing Material", 10 => "Scrap" */];
 	public $stockTypes = [0=>"None",1=>'Batch Wise',2=>"Serial Wise"];
 	public $fgColorCode = ["WHITE"=>"W","GREY"=>"G"];
-	public $fgCapacity = ["3 Ton"=>"3T","5 Ton"=>"5T"];
+	public $fgCapacity = ["3 TON"=>"3T","5 TON"=>"5T"];
 
 	//Crm Status
 	public $leadFrom = ["Facebook","Indiamart","Instagram","Facebook Comments","Trade India","Exporter India","Facebook Admanager"];

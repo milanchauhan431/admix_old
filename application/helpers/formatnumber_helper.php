@@ -613,4 +613,16 @@ function getSpAccListOption($accounts,$acc_id = 0){
 
 	return $options;
 }
+
+/* Brand Options */
+function getBrandListOption($brandList,$brand = "",$value_type = 0){
+	$options = '';
+	foreach($brandList as $row):
+		$value = ($value_type == 1)?$row->brand_name:$row->id;
+		$selected = (!empty($brand) && $brand == $value)?"selected":"";
+		$options .= '<option value="'.$value.'" '.$selected.'>'.$row->brand_name.'</option>';
+	endforeach;
+
+	return $options;
+}
 ?>

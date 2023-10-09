@@ -39,6 +39,14 @@ $(document).ready(function(){
     /* $(document).on('change','#sales_type', function(){ gstin(); }); */
 	$(document).on('change',"#apply_round",function(){ claculateColumn(); });
 
+	$(document).on('change','#itemForm #brand_id',function(){
+		if($(this).find(":selected").val() != ""){
+            $("#itemForm #brand_name").val($(this).find(":selected").text());
+        }else{
+            $("#itemForm #brand_name").val("");
+        }
+	});
+
 	$(document).on('change',"#sp_acc_id",function(){
 		var tax_class = $(this).find(":selected").data('tax_class');
 		var gstin = $("#gstin").find(":selected").val();	

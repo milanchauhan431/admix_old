@@ -172,7 +172,8 @@
 												<input type="hidden" class="itemFormInput" id="item_code" value="" />
 												<input type="hidden" class="itemFormInput" id="item_type" value="1" />
 												<input type="hidden" class="itemFormInput" id="stock_eff" value="1" />
-												<input type="hidden" class="itemFormInput" id="org_price" class="org_price" value="" />
+												<input type="hidden" class="itemFormInput org_price" id="org_price" value="" />
+                                                <input type="hidden" class="itemFormInput" id="brand_name" value="">
 											</div>
 											<div class="col-md-4 form-group">
 												<label for="item_id">Product Name</label>
@@ -194,6 +195,13 @@
 													<?=getItemListOption($itemList)?>
 												</select>
 											</div>
+                                            <div class="col-md-2 form-group">
+                                                <label for="brand_id">Brand</label>
+                                                <select name="brand_id" id="brand_id" class="form-control select2 itemFormInput">
+                                                    <option value="">Select Brand</option>
+                                                    <?=getBrandListOption($brandList)?>
+                                                </select>
+                                            </div>
 											<div class="col-md-2 form-group">
 												<label for="qty">Quantity</label>
 												<input type="text" id="qty" class="form-control floatOnly req itemFormInput" value="0">
@@ -206,11 +214,11 @@
 												<label for="disc_per">Disc. (%)</label>
 												<input type="text" id="disc_per" class="form-control floatOnly itemFormInput" value="0">
 											</div>
-											<div class="col-md-2 form-group">
+											<div class="col-md-3 form-group">
 												<label for="price">Price</label>
 												<input type="text" id="price" class="form-control floatOnly req itemFormInput" value="0" />
 											</div>
-											<div class="col-md-2 form-group">
+											<div class="col-md-3 form-group">
 												<label for="unit_id">Unit</label>        
 												<select id="unit_id" class="form-control select2 itemFormInput">
 													<option value="">Select Unit</option>
@@ -218,7 +226,7 @@
 												</select> 
 												<input type="hidden" id="unit_name" class="form-control itemFormInput" value="" />                       
 											</div>
-											<div class="col-md-2 form-group">
+											<div class="col-md-3 form-group">
 												<label for="hsn_code">HSN Code</label>
 												<input type="text" id="hsn_code" class="form-control numericOnly req itemFormInput" value="" />
 												<!--<select name="hsn_code" id="hsn_code" class="form-control select2">
@@ -226,7 +234,7 @@
 													<?=getHsnCodeListOption($hsnList)?>
 												</select>-->
 											</div>
-											<div class="col-md-2 form-group">
+											<div class="col-md-3 form-group">
 												<label for="gst_per">GST Per.(%)</label>
 												<select id="gst_per" class="form-control select2 itemFormInput">
 													<?php
@@ -236,7 +244,7 @@
 													?>
 												</select>
 											</div>
-											<div class="col-md-4 form-group">
+											<div class="col-md-10 form-group">
 												<label for="item_remark">Remark</label>
 												<input type="text" id="item_remark" class="form-control itemFormInput" value="" />
 											</div>

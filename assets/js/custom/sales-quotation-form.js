@@ -144,7 +144,9 @@ function AddRow(data) {
 	var refIdInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][ref_id]", value: data.ref_id });
     var itemCodeInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][item_code]", value: data.item_code });
     var itemtypeInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][item_type]", value: data.item_type });
-    cell = $(row.insertCell(-1));
+    var brandIdInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][brand_id]", value: data.brand_id });
+    var brandNameInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][brand_name]", value: data.brand_name });
+	cell = $(row.insertCell(-1));
     cell.html(data.item_name);
     cell.append(idInput);
     cell.append(itemIdInput);
@@ -153,6 +155,8 @@ function AddRow(data) {
     cell.append(refIdInput);
     cell.append(itemCodeInput);
     cell.append(itemtypeInput);
+	cell.append(brandIdInput);
+    cell.append(brandNameInput);
 
     var hsnCodeInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][hsn_code]", value: data.hsn_code });
 	cell = $(row.insertCell(-1));

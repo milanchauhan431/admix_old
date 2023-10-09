@@ -40,7 +40,7 @@ class GateInward extends MY_Controller{
         $gateEntryData = $this->gateEntry->getGateEntry($data['id']);
         $this->data['gateEntryData'] = $gateEntryData;
         $this->data['partyList'] = $this->party->getPartyList(['party_category'=>[1,2,3]]);
-        $this->data['itemList'] = $this->item->getItemList();
+        $this->data['itemList'] = $this->item->getItemList(['item_type'=>[2,3]]);
         $this->data['locationList'] = $this->storeLocation->getStoreLocationList(['store_type'=>'0,15','final_location'=>1]);
         $this->data['materialGradeList'] = $this->materialGrade->getMaterialGrades();
         $this->data['trans_no'] = $this->transMainModel->getMirNextNo(2);
@@ -51,7 +51,7 @@ class GateInward extends MY_Controller{
 
     public function addGateInward(){
         $this->data['partyList'] = $this->party->getPartyList(['party_category'=>[2,3]]);
-        $this->data['itemList'] = $this->item->getItemList();
+        $this->data['itemList'] = $this->item->getItemList(['item_type'=>[2,3]]);
         $this->data['locationList'] = $this->storeLocation->getStoreLocationList(['store_type'=>'0,15','final_location'=>1]);
         $this->data['materialGradeList'] = $this->materialGrade->getMaterialGrades();
         $this->data['trans_no'] = $this->transMainModel->getMirNextNo(2);
@@ -121,7 +121,7 @@ class GateInward extends MY_Controller{
         $data = $this->input->post();
         $gateInward = $this->gateInward->getGateInward($data['id']);
         $this->data['partyList'] = $this->party->getPartyList(['party_category'=>[2,3]]);
-        $this->data['itemList'] = $this->item->getItemList();
+        $this->data['itemList'] = $this->item->getItemList(['item_type'=>[2,3]]);
         $this->data['locationList'] = $this->storeLocation->getStoreLocationList(['store_type'=>'0,15','final_location'=>1]);
         $this->data['gateInwardData'] = $gateInward;
         $this->load->view($this->form,$this->data);

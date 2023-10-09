@@ -39,6 +39,7 @@ class SalesEnquiry extends MY_Controller{
         $this->data['trans_number'] = $this->data['trans_prefix'].$this->data['trans_no'];
         $this->data['partyList'] = $this->party->getPartyList(['party_category'=>1,'party_type'=>"0,1"]);
         $this->data['itemList'] = $this->item->getItemList(['item_type'=>1,'active_item'=>"1,2"]);
+        $this->data['brandList'] = $this->brandMaster->getBrandList();
         $this->data['unitList'] = $this->item->itemUnits();
         $this->load->view($this->form,$this->data);
     }
@@ -50,6 +51,7 @@ class SalesEnquiry extends MY_Controller{
         $this->data['trans_number'] = $this->data['trans_prefix'].$this->data['trans_no'];
         $this->data['partyList'] = $this->party->getPartyList(['party_category'=>1,'party_type'=>"0,1"]);
         $this->data['itemList'] = $this->item->getItemList(['item_type'=>1,'active_item'=>"1,2"]);
+        $this->data['brandList'] = $this->brandMaster->getBrandList();
         $this->data['unitList'] = $this->item->itemUnits();
         $this->load->view($this->form,$this->data);
     }
@@ -79,6 +81,7 @@ class SalesEnquiry extends MY_Controller{
         $this->data['gstinList'] = $this->party->getPartyGSTDetail(['party_id' => $dataRow->party_id]);
         $this->data['partyList'] = $this->party->getPartyList(['party_category' => 1,'party_type'=>"0,1"]);
         $this->data['itemList'] = $this->item->getItemList(['item_type'=>1,'active_item'=>"1,2"]);
+        $this->data['brandList'] = $this->brandMaster->getBrandList();
         $this->data['unitList'] = $this->item->itemUnits();
         $this->data['hsnList'] = $this->hsnModel->getHSNList();
         $this->load->view($this->form,$this->data);

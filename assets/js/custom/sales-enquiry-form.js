@@ -75,6 +75,14 @@ $(document).ready(function(){
 		$("#gst_per").val(($("#hsn_code :selected").data('gst_per') || 0));
 		$("#gst_per").comboSelect();
 	}); */
+
+	$(document).on('change','#itemForm #brand_id',function(){
+		if($(this).find(":selected").val() != ""){
+            $("#itemForm #brand_name").val($(this).find(":selected").text());
+        }else{
+            $("#itemForm #brand_name").val("");
+        }
+	});
 });
 
 function AddRow(data) {
@@ -110,6 +118,8 @@ function AddRow(data) {
     var itemtypeInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][item_type]", value: data.item_type });
     var hsnCodeInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][hsn_code]", value: data.hsn_code });
     var gstPerInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][gst_per]", value: data.gst_per });
+    var brandIdInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][brand_id]", value: data.brand_id });
+    var brandNameInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][brand_name]", value: data.brand_name });
     cell = $(row.insertCell(-1));
     cell.html(data.item_name);
     cell.append(idInput);
@@ -121,6 +131,8 @@ function AddRow(data) {
     cell.append(itemtypeInput);
     cell.append(hsnCodeInput);
     cell.append(gstPerInput);
+    cell.append(brandIdInput);
+    cell.append(brandNameInput);
 
     var qtyInput = $("<input/>", { type: "hidden", name: "itemData["+countRow+"][qty]", class:"item_qty", value: data.qty });
 	var qtyErrorDiv = $("<div></div>", { class: "error qty" + countRow });

@@ -186,10 +186,11 @@
                                 <input type="hidden" name="hsn_code" id="hsn_code" value="" />
                                 <input type="hidden" name="gst_per" id="gst_per" value="" />
                                 <!-- <input type="hidden" name="attachment" id="attachment" value=""> -->
+                                <input type="hidden" name="brand_name" id="brand_name" value="">
                             </div>
                             
 
-                            <div class="col-md-12 form-group">
+                            <div class="col-md-8 form-group">
 								<label for="item_id">Product Name</label>
                                 <div class="float-right">	
                                     <span class="dropdown float-right">
@@ -208,6 +209,13 @@
                                 <select name="item_id" id="item_id" class="form-control select2 itemDetails itemOptions" data-res_function="resItemDetail" data-item_type="1">
                                     <option value="">Select Product Name</option>
                                     <?=getItemListOption($itemList)?>
+                                </select>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label for="brand_id">Brand</label>
+                                <select name="brand_id" id="brand_id" class="form-control select2">
+                                    <option value="">Select Brand</option>
+                                    <?=getBrandListOption($brandList)?>
                                 </select>
                             </div>
                             <div class="col-md-6 form-group">

@@ -205,15 +205,24 @@
                                 <input type="hidden" name="item_type" id="item_type" value="1" />
                                 <input type="hidden" name="bom_items" id="bom_items" value="0" />
                                 <!-- <input type="hidden" name="attachment" id="attachment" value=""> -->
+
+                                <input type="hidden" name="brand_name" id="brand_name" value="">
                             </div>
                             
 
-                            <div class="col-md-12 form-group">
+                            <div class="col-md-8 form-group">
 								<label for="item_id">Product Name</label>
                                 <input type="hidden" name="item_name" id="item_name" class="form-control" value="" />
                                 <select name="item_id" id="item_id" class="form-control select2 itemDetails itemOptions" data-res_function="resItemDetail">
                                     <option value="">Select Product Name</option>
                                     <?=getItemListOption($itemList)?>
+                                </select>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label for="brand_id">Brand</label>
+                                <select name="brand_id" id="brand_id" class="form-control select2">
+                                    <option value="">Select Brand</option>
+                                    <?=getBrandListOption($brandList)?>
                                 </select>
                             </div>
                             <div class="col-md-4 form-group">

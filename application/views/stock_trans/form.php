@@ -17,12 +17,21 @@
                 </select>
             </div>
 
-            <div class="col-md-6 form-group">
+            <div class="col-md-4 form-group">
+                <label for="unique_id">Brand</label>
+                <select name="unique_id" id="unique_id" class="form-control select2">
+                    <option value="">Select Brand</option>
+                    <?=getBrandListOption($brandList)?>
+                </select>
+                <input type="hidden" name="batch_no" id="batch_no" value="">
+            </div>
+
+            <div class="col-md-4 form-group">
                 <label for="qty">Qty</label>
                 <input type="text" name="qty" id="qty" class="form-control floatOnly" value="">
             </div>
 
-            <div class="col-md-6 form-group">
+            <div class="col-md-4 form-group">
                 <label for="size">Packing Standard</label>
                 <input type="text" name="size" id="size" class="form-control numericOnly" value="" readonly />
             </div>
@@ -35,6 +44,15 @@
     </div>
 </form>
 <script>
+$(document).ready(function(){
+    $(document).on('change','#unique_id',function(){
+        if($(this).find(":selected").val() != ""){
+            $("#batch_no").val($(this).find(":selected").text());
+        }else{
+            $("#batch_no").val("");
+        }
+    });
+});
 function resItemDetail(response){
     if(response != ""){
         var itemDetail = response.data.itemDetail;

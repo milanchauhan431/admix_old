@@ -30,7 +30,8 @@ class StockTrans extends MY_Controller{
     }
 
     public function addStock(){
-        $this->data['itemList'] = $this->item->getItemList();
+        $this->data['itemList'] = $this->item->getItemList(['item_type'=>[1]]);
+        $this->data['brandList'] = $this->brandMaster->getBrandList();
         $this->load->view($this->form, $this->data);
     }
 
@@ -55,9 +56,9 @@ class StockTrans extends MY_Controller{
             $this->printJson(['status'=>0,'message'=>$errorMessage]);
         else:
             $data['entry_type'] = $this->data['entryData']->id;
-            $data['unique_id'] = 0;
             $data['location_id'] = $this->RTD_STORE->id;
-            $data['batch_no'] = "GB";
+            //$data['unique_id'] = 0;
+            //$data['batch_no'] = "GB";
             $this->printJson($this->itemStock->save($data));
         endif;
     }
