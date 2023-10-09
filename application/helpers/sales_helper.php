@@ -67,6 +67,8 @@ function getSalesDtHeader($page){
 	$data['salesOrders'][] = ["name"=>"SO. Date"];
 	$data['salesOrders'][] = ["name"=>"Customer Name"];
 	$data['salesOrders'][] = ["name"=>"Item Name"];
+	$data['salesOrders'][] = ["name"=>"Brand Name"];
+	$data['salesOrders'][] = ["name"=>"Stock Qty"];
     $data['salesOrders'][] = ["name"=>"Order Qty"];
     $data['salesOrders'][] = ["name"=>"Dispatch Qty"];
     $data['salesOrders'][] = ["name"=>"Pending Qty"];
@@ -195,7 +197,7 @@ function getSalesOrderData($data){
 
     $action = getActionButton($printBtn.$editButton.$deleteButton);
 
-    return [$action,$data->sr_no,$data->trans_number,$data->trans_date,$data->party_name,$data->item_name,$data->qty,$data->dispatch_qty,$data->pending_qty];
+    return [$action,$data->sr_no,$data->trans_number,$data->trans_date,$data->party_name,$data->item_name,$data->brand_name,$data->stock_qty,$data->qty,$data->dispatch_qty,$data->pending_qty];
 }
 
 /* Estimate [Cash] Table Data */

@@ -9,9 +9,10 @@ class SalesOrderModel extends MasterModel{
 
     public function getDTRows($data){
         $data['tableName'] = $this->transChild;
-        $data['select'] = "trans_child.id as trans_child_id,trans_child.item_name,trans_child.qty,trans_child.dispatch_qty,(trans_child.qty - trans_child.dispatch_qty) as pending_qty,trans_main.id,trans_main.trans_number,DATE_FORMAT(trans_main.trans_date,'%d-%m-%Y') as trans_date,trans_main.party_name,trans_main.sales_type,trans_child.trans_status";
+        $data['select'] = "trans_child.id as trans_child_id,trans_child.item_name,trans_child.qty,trans_child.dispatch_qty,(trans_child.qty - trans_child.dispatch_qty) as pending_qty,trans_main.id,trans_main.trans_number,DATE_FORMAT(trans_main.trans_date,'%d-%m-%Y') as trans_date,trans_main.party_name,trans_main.sales_type,trans_child.trans_status,trans_child.brand_name,ifnull(st.stock_qty,0) as stock_qty";
 
         $data['leftJoin']['trans_main'] = "trans_main.id = trans_child.trans_main_id";
+        $data['leftJoin']['(SELECT SUM(qty * p_or_m) as stock_qty,item_id FROM stock_transaction WHERE is_delete = 0 GROUP BY item_id) as st'] = "trans_child.item_id = st.item_id";
 
         $data['where']['trans_child.entry_type'] = $data['entry_type'];
 
@@ -35,6 +36,8 @@ class SalesOrderModel extends MasterModel{
         $data['searchCol'][] = "DATE_FORMAT(trans_main.trans_date,'%d-%m-%Y')";
         $data['searchCol'][] = "trans_main.party_name";
         $data['searchCol'][] = "trans_child.item_name";
+        $data['searchCol'][] = "trans_child.brand_name";
+        $data['searchCol'][] = "";
         $data['searchCol'][] = "trans_child.qty";
         $data['searchCol'][] = "trans_child.dispatch_qty";
         $data['searchCol'][] = "(trans_child.qty - trans_child.dispatch_qty)";
