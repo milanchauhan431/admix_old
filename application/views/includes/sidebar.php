@@ -10,6 +10,13 @@
                         <i class="icon-Car-Wheel"></i><span class="hide-menu">Dashboards </span>
                     </a>
                 </li>
+                <?php if($this->userRole == 7):?>
+                <li class="sidebar-item">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?=base_url('partyOrders')?>" aria-expanded="false">
+                        <i class="icon-Shopping-Basket"></i><span class="hide-menu">Party Order </span>
+                    </a>
+                </li>
+                <?php endif; ?>
                 <?=$this->permission->getEmployeeMenus()?>
                 <li class="sidebar-item">
                     <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?=base_url('reportList')?>" aria-expanded="false">

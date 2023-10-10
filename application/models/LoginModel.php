@@ -21,6 +21,7 @@ class LoginModel extends CI_Model{
 					$this->session->set_userdata('role',$resData->emp_role);
 					$this->session->set_userdata('roleName',$this->empRole[$empRole]);
 					$this->session->set_userdata('emp_name',$resData->emp_name);
+					$this->session->set_userdata('partyId',$resData->party_id);
 
 					//Defualt Store
 					$RTD_STORE = $this->db->where('store_type',1)->get('location_master')->row();

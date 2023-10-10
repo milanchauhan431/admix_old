@@ -63,6 +63,7 @@ function getSalesDtHeader($page){
     /* Sales Order Header */
     $data['salesOrders'][] = ["name"=>"Action","style"=>"width:5%;","sortable"=>"FALSE","textAlign"=>"center"];
 	$data['salesOrders'][] = ["name"=>"#","style"=>"width:5%;","sortable"=>"FALSE","textAlign"=>"center"]; 
+	$data['salesOrders'][] = ["name"=>"Ordered By"];
 	$data['salesOrders'][] = ["name"=>"SO. No."];
 	$data['salesOrders'][] = ["name"=>"SO. Date"];
 	$data['salesOrders'][] = ["name"=>"Customer Name"];
@@ -72,6 +73,18 @@ function getSalesDtHeader($page){
     $data['salesOrders'][] = ["name"=>"Order Qty"];
     $data['salesOrders'][] = ["name"=>"Dispatch Qty"];
     $data['salesOrders'][] = ["name"=>"Pending Qty"];
+
+    /* Party Order Header */
+    $data['partyOrders'][] = ["name"=>"Action","style"=>"width:5%;","sortable"=>"FALSE","textAlign"=>"center"];
+	$data['partyOrders'][] = ["name"=>"#","style"=>"width:5%;","sortable"=>"FALSE","textAlign"=>"center"]; 
+	$data['partyOrders'][] = ["name"=>"Order Status"];
+	$data['partyOrders'][] = ["name"=>"SO. No."];
+	$data['partyOrders'][] = ["name"=>"SO. Date"];
+	$data['partyOrders'][] = ["name"=>"Item Name"];
+	$data['partyOrders'][] = ["name"=>"Brand Name"];
+    $data['partyOrders'][] = ["name"=>"Order Qty"];
+    $data['partyOrders'][] = ["name"=>"Received Qty"];
+    $data['partyOrders'][] = ["name"=>"Pending Qty"];
 
     /* Estimate [Cash] Header */
     $data['estimate'][] = ["name"=>"Action","style"=>"width:5%;","sortable"=>"FALSE","textAlign"=>"center"];
@@ -189,15 +202,27 @@ function getSalesOrderData($data){
     $deleteParam = "{'postData':{'id' : ".$data->id."},'message' : 'Sales Order'}";
     $deleteButton = '<a class="btn btn-danger btn-delete permission-remove" href="javascript:void(0)" onclick="trash('.$deleteParam.');" datatip="Remove" flow="down"><i class="ti-trash"></i></a>';
 
-    $printBtn = '<a class="btn btn-success btn-edit permission-approve1" href="'.base_url('salesOrders/printOrder/'.$data->id).'" target="_blank" datatip="Print" flow="down"><i class="fas fa-print" ></i></a>';
+    $printBtn = '<a class="btn btn-info btn-edit permission-approve1" href="'.base_url('salesOrders/printOrder/'.$data->id).'" target="_blank" datatip="Print" flow="down"><i class="fas fa-print" ></i></a>';
 
-    if($data->trans_status > 0):
-        $editButton = $deleteButton = "";
+    $acceptButton = '';
+    if($data->sales_executive == $data->party_id):
+        $acceptButton = '<a class="btn btn-success btn-edit permission-modify" href="'.base_url('salesOrders/edit/'.$data->id.'/1').'" datatip="Accept Order" flow="down" ><i class="ti-check"></i></a>';
     endif;
 
-    $action = getActionButton($printBtn.$editButton.$deleteButton);
+    if($data->trans_status > 0):
+        $acceptButton = $editButton = $deleteButton = "";
+    endif;
 
-    return [$action,$data->sr_no,$data->trans_number,$data->trans_date,$data->party_name,$data->item_name,$data->brand_name,$data->stock_qty,$data->qty,$data->dispatch_qty,$data->pending_qty];
+    $action = getActionButton($printBtn.$acceptButton.$editButton.$deleteButton);
+
+    return [$action,$data->sr_no,$data->ordered_by,$data->trans_number,$data->trans_date,$data->party_name,$data->item_name,$data->brand_name,$data->stock_qty,$data->qty,$data->dispatch_qty,$data->pending_qty];
+}
+
+/* Party Order Table Data */
+function getPartyOrderData($data){
+    $action = getActionButton("");
+
+    return [$action,$data->sr_no,$data->order_status,$data->trans_number,$data->trans_date,$data->item_name,$data->brand_name,$data->qty,$data->dispatch_qty,$data->pending_qty];
 }
 
 /* Estimate [Cash] Table Data */

@@ -55,3 +55,4 @@ $route['404'] = 'error_404';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['logout'] = "login/logout";
+$route['partyOrders'] = "salesOrders/partyOrders";

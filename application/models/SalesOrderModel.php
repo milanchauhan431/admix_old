@@ -9,7 +9,7 @@ class SalesOrderModel extends MasterModel{
 
     public function getDTRows($data){
         $data['tableName'] = $this->transChild;
-        $data['select'] = "trans_child.id as trans_child_id,trans_child.item_name,trans_child.qty,trans_child.dispatch_qty,(trans_child.qty - trans_child.dispatch_qty) as pending_qty,trans_main.id,trans_main.trans_number,DATE_FORMAT(trans_main.trans_date,'%d-%m-%Y') as trans_date,trans_main.party_name,trans_main.sales_type,trans_child.trans_status,trans_child.brand_name,ifnull(st.stock_qty,0) as stock_qty";
+        $data['select'] = "trans_child.id as trans_child_id,trans_child.item_name,trans_child.qty,trans_child.dispatch_qty,(trans_child.qty - trans_child.dispatch_qty) as pending_qty,trans_main.id,trans_main.trans_number,DATE_FORMAT(trans_main.trans_date,'%d-%m-%Y') as trans_date,trans_main.party_name,trans_main.sales_type,trans_child.trans_status,trans_child.brand_name,ifnull(st.stock_qty,0) as stock_qty,trans_main.sales_executive,trans_main.party_id,(CASE WHEN trans_main.sales_executive = trans_main.party_id THEN 'Client' ELSE 'Office' END) as ordered_by";
 
         $data['leftJoin']['trans_main'] = "trans_main.id = trans_child.trans_main_id";
         $data['leftJoin']['(SELECT SUM(qty * p_or_m) as stock_qty,item_id FROM stock_transaction WHERE is_delete = 0 GROUP BY item_id) as st'] = "trans_child.item_id = st.item_id";
@@ -32,6 +32,7 @@ class SalesOrderModel extends MasterModel{
 
         $data['searchCol'][] = "";
         $data['searchCol'][] = "";
+        $data['searchCol'][] = "(CASE WHEN trans_main.sales_executive = trans_main.party_id THEN 'Client' ELSE 'Office' END)";
         $data['searchCol'][] = "trans_main.trans_number";
         $data['searchCol'][] = "DATE_FORMAT(trans_main.trans_date,'%d-%m-%Y')";
         $data['searchCol'][] = "trans_main.party_name";
@@ -267,5 +268,48 @@ class SalesOrderModel extends MasterModel{
         $queryData['where']['(trans_child.qty - trans_child.dispatch_qty) >'] = 0;
         return $this->rows($queryData);
     }
+
+    /* Party Order Start */
+    public function getPartyOrderDTRows($data){
+        $data['tableName'] = $this->transChild;
+        $data['select'] = "trans_child.id as trans_child_id,trans_child.item_name,trans_child.qty,trans_child.dispatch_qty,(trans_child.qty - trans_child.dispatch_qty) as pending_qty,trans_main.id,trans_main.trans_number,DATE_FORMAT(trans_main.trans_date,'%d-%m-%Y') as trans_date,trans_main.party_name,trans_main.sales_type,trans_child.trans_status,trans_child.brand_name,trans_main.sales_executive,trans_main.party_id,if(trans_main.is_approve > 0,'Accepted','Pending') as order_status";
+
+        $data['leftJoin']['trans_main'] = "trans_main.id = trans_child.trans_main_id";
+
+        $data['where']['trans_child.entry_type'] = $data['entry_type'];
+        $data['where']['trans_child.created_by'] = $this->loginId;
+        $data['customWhere'][] = "trans_main.party_id = trans_main.sales_executive";
+
+        if($data['status'] == 0):
+            $data['where']['trans_child.trans_status'] = 0;
+            $data['where']['trans_main.trans_date <='] = $this->endYearDate;
+        elseif($data['status'] == 1):
+            $data['where']['trans_child.trans_status'] = 1;
+            $data['where']['trans_main.trans_date >='] = $this->startYearDate;
+            $data['where']['trans_main.trans_date <='] = $this->endYearDate;
+        endif;
+
+        $data['order_by']['trans_main.trans_date'] = "DESC";
+        $data['order_by']['trans_main.id'] = "DESC";
+
+        $data['group_by'][] = "trans_child.id";
+
+        $data['searchCol'][] = "";
+        $data['searchCol'][] = "";
+        $data['searchCol'][] = "if(trans_main.is_approve > 0,'Accepted','Pending')";
+        $data['searchCol'][] = "trans_main.trans_number";
+        $data['searchCol'][] = "DATE_FORMAT(trans_main.trans_date,'%d-%m-%Y')";
+        $data['searchCol'][] = "trans_child.item_name";
+        $data['searchCol'][] = "trans_child.brand_name";
+        $data['searchCol'][] = "trans_child.qty";
+        $data['searchCol'][] = "trans_child.dispatch_qty";
+        $data['searchCol'][] = "(trans_child.qty - trans_child.dispatch_qty)";
+
+        $columns =array(); foreach($data['searchCol'] as $row): $columns[] = $row; endforeach;
+        if(isset($data['order'])){$data['order_by'][$columns[$data['order'][0]['column']]] = $data['order'][0]['dir'];}
+        
+        return $this->pagingRows($data);
+    }
+    /* Party Order End */
 }
 ?>

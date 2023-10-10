@@ -27,6 +27,9 @@
                                         <input type="hidden" name="apply_round" id="apply_round" value="<?=(!empty($dataRow->apply_round))?$dataRow->apply_round:"1"?>">
 
                                         <input type="hidden" name="ledger_eff" id="ledger_eff" value="0">
+
+                                        <input type="hidden" name="is_approve" id="is_approve" value="<?=(!empty($is_approve))?$is_approve:((!empty($dataRow->is_approve))?$dataRow->is_approve:"0")?>">
+                                        <input type="hidden" name="approve_date" id="approve_date" value="<?=(!empty($approve_date))?$approve_date:((!empty($dataRow->approve_date))?$dataRow->approve_date:"0")?>">
                                     </div>
 
                                     <div class="col-md-2 form-group">
@@ -104,7 +107,7 @@
                                         <input type="text" name="masterDetails[t_col_3]" id="master_t_col_3" class="form-control" value="<?=(!empty($dataRow->ship_address))?$dataRow->ship_address:""?>">
                                     </div>
                                     <div class="col-md-3 form-group">
-                                        <label for="master_t_col_4">Address</label>
+                                        <label for="master_t_col_4">Pincode</label>
                                         <input type="text" name="masterDetails[t_col_4]" id="master_t_col_4" class="form-control" value="<?=(!empty($dataRow->ship_pincode))?$dataRow->ship_pincode:""?>">
                                     </div>
                                 </div>
@@ -176,7 +179,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="col-md-12">
-                            <button type="button" class="btn waves-effect waves-light btn-outline-success float-right save-form" onclick="customStore({'formId':'saveSalesOrder'});" ><i class="fa fa-check"></i> Save</button>
+                            <button type="button" class="btn waves-effect waves-light btn-outline-success float-right save-form" onclick="customStore({'formId':'saveSalesOrder'});" ><i class="fa fa-check"></i> <?=(!empty($is_approve))?"Acccept":"Save"?></button>
                             <a href="javascript:void(0)" onclick="window.location.href='<?=base_url($headData->controller)?>'" class="btn waves-effect waves-light btn-outline-secondary float-right btn-close press-close-btn save-form" style="margin-right:10px;"><i class="fa fa-times"></i> Cancel</a>
                         </div>
                     </div>
