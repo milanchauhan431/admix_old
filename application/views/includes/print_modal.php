@@ -37,7 +37,7 @@
 								<input type="text" name="extra_copy" id="extra_copy" class="form-control numericOnly" value="0">
                                 </div>
 
-                                <div class="col-md-12 form-group">
+                                <div class="col-md-12 form-group hidden">
                                 <label>Max Lines Per Page</label>
 								<input type="text" name="max_lines" id="max_lines" class="form-control numericOnly" placeholder="Max Lines Per Page" value="">
                                 </div>

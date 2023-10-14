@@ -172,7 +172,7 @@ class SalesInvoice extends MY_Controller{
         foreach($printTypes as $printType):
             ++$i;           
             $this->data['printType'] = $printType;
-            $this->data['maxLinePP'] = (!empty($postData['max_lines']))?$postData['max_lines']:15;
+            $this->data['maxLinePP'] = (!empty($postData['max_lines']))?$postData['max_lines']:11;
 		    $pdfData .= $this->load->view('sales_invoice/print',$this->data,true);
             if($i != $countPT): $pdfData .= "<pagebreak>"; endif;
         endforeach;

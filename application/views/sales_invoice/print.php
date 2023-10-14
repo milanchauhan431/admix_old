@@ -96,7 +96,7 @@
 
                     $blankLines = ($maxLinePP - $i);
                     if($blankLines > 0):
-                        for($j=1;$j<=$blankLines;$j++):
+                        for($j=0;$j<=$blankLines;$j++):
                             echo '<tr>
                                 <td style="border-top:none;border-bottom:none;">&nbsp;</td>
                                 <td style="border-top:none;border-bottom:none;"></td>
@@ -207,9 +207,13 @@
                 <?php endif; ?>
             </tbody>
         </table>
-
-        <h4>Terms & Conditions :-</h4>
+        
         <table class="table top-table" style="margin-top:10px;width:92%;">
+            <tr>
+                <th class="text-left">
+                    <h4>Terms & Conditions :-</h4>
+                </th>
+            </tr>
             <?php
                 if(!empty($invData->termsConditions)):
                     foreach($invData->termsConditions as $row):
