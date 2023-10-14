@@ -1,16 +1,16 @@
 <div class="row">
     <div class="col-12">
         <?php if(!empty($header_footer)): ?>
-        <table>
+        <!-- <table>
             <tr>
                 <td>
                     <img src="<?=$letter_head?>" class="img">
                 </td>
             </tr>
-        </table>
+        </table> -->
         <?php endif; ?>
 
-        <table class="table bg-light-grey">
+        <table class="table bg-light-grey" style="margin-left:12px;width:97%;">
             <tr class="" style="letter-spacing: 2px;font-weight:bold;padding:2px !important; border-bottom:1px solid #000000;">
                 <td style="width:33%;" class="fs-18 text-left">
                     GSTIN: <?=$companyData->company_gst_no?>
@@ -20,13 +20,13 @@
             </tr>
         </table>
         
-        <table class="table item-list-bb fs-22" style="margin-top:5px;">
+        <table class="table item-list-bb fs-22" style="margin-top:5px;width:97%;">
             <tr>
                 <td style="width:60%; vertical-align:top;" rowspan="3">
                     <b>BILL TO</b><br>
                     <b><?=$invData->party_name?></b><br>
                     <?=(!empty($partyData->party_address) ? $partyData->party_address : '')?><br>
-                    <b>GSTIN : <?= $invData->gstin?> | STATE CODE: <?=substr($invData->gstin, 0, 2)?> | CITY : <?=$partyData->city_name?></b>
+                    <b>GSTIN : <?= $invData->gstin?> | STATE CODE: <?=($invData->gstin != "URP")?substr($invData->gstin, 0, 2):""?> | CITY : <?=$partyData->city_name?></b>
                 </td>
                 <td>
                     <b>Invoice No. : <?=$invData->trans_prefix . $invData->trans_no?></b>
@@ -44,7 +44,7 @@
             </tr>
         </table>
         
-        <table class="table item-list-bb" style="margin-top:10px;">
+        <table class="table item-list-bb" style="margin-top:10px;width:97%;">
             <?php $thead = '<thead>
                     <tr>
                         <th style="width:40px;">No.</th>
@@ -67,7 +67,7 @@
                         foreach($invData->itemList as $row):						
                             echo '<tr>';
                                 echo '<td class="text-center">'.$i++.'</td>';
-                                echo '<td>'.$row->item_name.'</td>';
+                                echo '<td>'.$row->item_name.(($invData->bill_per == 100)?" PREMIUM":"").'</td>';
                                 echo '<td class="text-center">'.$row->hsn_code.'</td>';
                                 echo '<td class="text-center">'.floatVal($row->qty).' ('.$row->unit_name.')</td>';
                                 echo '<td class="text-right">'.floatVal($row->price).'</td>';
@@ -76,7 +76,7 @@
                                 echo '<td class="text-right">'.$row->taxable_amount.'</td>';
                             echo '</tr>';
 
-                            if(($rowCount == $maxLinePP && $pageCount == 1) || ($rowCount == 20 && $pageCount != 1)): 
+                            /* if(($rowCount == $maxLinePP && $pageCount == 1) || ($rowCount == 20 && $pageCount != 1)): 
                                 echo '
                                     </tbody></table>
                                     <div class="text-right"><i>Continue to Next Page</i></div>
@@ -87,7 +87,7 @@
                                 $rowCount = 0; // Reset the row count
                                 $pageCount++; // Increment the page count
                             endif;
-                            $rowCount++;
+                            $rowCount++; */
                             
                             $totalQty += $row->qty;
                             if($row->gst_per > $migst){$migst=$row->gst_per;$mcgst=$row->cgst_per;$msgst=$row->sgst_per;}
@@ -207,8 +207,9 @@
                 <?php endif; ?>
             </tbody>
         </table>
+
         <h4>Terms & Conditions :-</h4>
-        <table class="table top-table" style="margin-top:10px;">
+        <table class="table top-table" style="margin-top:10px;width:92%;">
             <?php
                 if(!empty($invData->termsConditions)):
                     foreach($invData->termsConditions as $row):
@@ -222,7 +223,7 @@
         </table>
 
         <htmlpagefooter name="lastpage">
-            <table style="border-bottom:1px solid #545454;">
+            <table style="border-top:1px solid #545454;margin-top:10px;width:92%;">
                 <tr>
                     <th colspan="2" style="vertical-align:bottom;text-align:right;font-size:1rem;padding:5px 2px;">
                         For, <?=$companyData->company_name?><br>

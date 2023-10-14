@@ -165,21 +165,20 @@ class SalesInvoice extends MY_Controller{
 		$response="";
 		$logo=base_url('assets/images/logo.png');
 		$this->data['letter_head']=base_url('assets/images/letterhead-top.png');
+        $lh_bg =  base_url('assets/images/lh_bg.jpg');
 				
         $pdfData = "";
         $countPT = count($printTypes); $i=0;
         foreach($printTypes as $printType):
             ++$i;           
             $this->data['printType'] = $printType;
-            $this->data['maxLinePP'] = (!empty($postData['max_lines']))?$postData['max_lines']:18;
+            $this->data['maxLinePP'] = (!empty($postData['max_lines']))?$postData['max_lines']:15;
 		    $pdfData .= $this->load->view('sales_invoice/print',$this->data,true);
             if($i != $countPT): $pdfData .= "<pagebreak>"; endif;
         endforeach;
             
 		$mpdf = new \Mpdf\Mpdf();
 		$pdfFileName = str_replace(["/","-"," "],"_",$invData->trans_number).'.pdf';
-		/* $stylesheet = file_get_contents(base_url('assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css'));
-        $stylesheet = file_get_contents(base_url('assets/css/style.css?v=' . time())); */
         $stylesheet = file_get_contents(base_url('assets/css/pdf_style.css?v='.time()));
 		$mpdf->WriteHTML($stylesheet,1);
 		$mpdf->SetDisplayMode('fullpage');
@@ -189,7 +188,11 @@ class SalesInvoice extends MY_Controller{
 		
 		/* $mpdf->SetHTMLHeader($htmlHeader);
 		$mpdf->SetHTMLFooter($htmlFooter); */
-		$mpdf->AddPage('P','','','','',10,5,(($postData['header_footer'] == 1)?5:35),5,5,5,'','','','','','','','','','A4-P');
+        $mpdf->SetDefaultBodyCSS('background', "url('".$lh_bg."')");
+        $mpdf->SetDefaultBodyCSS('background-image-resize', 6);
+
+		//$mpdf->AddPage('P','','','','',10,5,(($postData['header_footer'] == 1)?5:35),5,5,5,'','','','','','','','','','A4-P');
+        $mpdf->AddPage('P','','','','',7,5,43,7,3,15,'','','','','','','','','','A4-P');
 		$mpdf->WriteHTML($pdfData);
 		$mpdf->Output($pdfFileName,'I');
 	}
