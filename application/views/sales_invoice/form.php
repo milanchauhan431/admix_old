@@ -197,7 +197,7 @@
 											</div>
                                             <div class="col-md-2 form-group">
                                                 <label for="brand_id">Brand</label>
-                                                <select name="brand_id" id="brand_id" class="form-control select2 itemFormInput">
+                                                <select id="brand_id" class="form-control select2 itemFormInput">
                                                     <option value="">Select Brand</option>
                                                     <?=getBrandListOption($brandList)?>
                                                 </select>

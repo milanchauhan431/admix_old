@@ -69,7 +69,7 @@ class SalesInvoice extends MY_Controller{
                 endif;
 
                 if($row['stock_eff'] == 1):
-                    $postData = ['location_id' => $this->RTD_STORE->id,'batch_no' => "GB",'item_id' => $row['item_id'],'stock_required'=>1,'single_row'=>1];
+                    $postData = ['location_id' => $this->RTD_STORE->id,'batch_no' => $row['brand_name'],'item_id' => $row['item_id'],'stock_required'=>1,'single_row'=>1];
                     
                     $stockData = $this->itemStock->getItemStockBatchWise($postData);  
                     

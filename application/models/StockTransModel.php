@@ -140,5 +140,17 @@ class StockTransModel extends MasterModel{
         return $stockData;
     }
 
+    /** For App */
+    public function getStockDataForApp(){
+        $data['tableName'] = $this->stockTrans;
+        $data['select'] = "stock_transaction.*,item_master.item_code,item_master.item_name";
+        $data['leftJoin']['item_master'] = "item_master.id = stock_transaction.item_id";
+        $data['where']['stock_transaction.p_or_m'] = 1;
+        $data['where']['stock_transaction.ref_date >='] = $this->startYearDate;
+        $data['where']['stock_transaction.ref_date <='] = $this->endYearDate;
+        $data['order_by']['stock_transaction.ref_date'] = 'DESC';
+        return $this->rows($data);
+    }
+
 }
 ?>

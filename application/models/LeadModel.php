@@ -90,7 +90,7 @@ class LeadModel extends MasterModel{
                     'party_category'=>1,
                     'party_type'=>2,
                     'party_name'=>$data['party_name'],
-                    'contact_phone'=>$data['contact_no'],
+                    'contact_mobile'=>$data['contact_no'],
                     'contact_person'=>$data['contact_person'],
                     'sales_executive'=>$data['sales_executive'],
                     'created_by'=>$this->loginId
@@ -279,5 +279,18 @@ class LeadModel extends MasterModel{
         $data['where']['crm_appointments.id'] = $id;
         return $this->row($data);
     }
+
+    public function getLeadListForApp($postData){ 
+		$data['tableName'] = $this->lead_managment;
+        $data['select'] ="lead_managment.*,party_master.party_name,employee_master.emp_name,party_master.party_phone";
+        $data['join']['party_master'] = "party_master.id = lead_managment.party_id AND party_master.is_delete = 0";
+        $data['leftJoin']['employee_master'] = "employee_master.id = lead_managment.sales_executive";
+
+        $data['where']['lead_managment.lead_status'] = $postData['lead_status'];
+        if(!in_array($this->userRole,[-1,1])){
+            $data['where']['lead_managment.sales_executive'] = $this->loginId;
+        }
+        return $this->rows($data);
+	}
 }
 ?>
