@@ -84,6 +84,18 @@ class ItemModel extends MasterModel{
             $queryData['where']['item_master.id'] = $data['id'];
         endif;
 
+        if(!empty($data['size_id'])):
+            $queryData['where']['item_master.size_id'] = $data['size_id'];
+        endif;
+
+        if(!empty($data['color'])):
+            $queryData['where']['item_master.color'] = $data['color'];
+        endif;
+
+        if(!empty($data['capacity'])):
+            $queryData['where']['item_master.capacity'] = $data['capacity'];
+        endif;
+
         if(!empty($data['item_code'])):
             $queryData['where']['item_master.item_code'] = trim($data['item_code']);
         endif;

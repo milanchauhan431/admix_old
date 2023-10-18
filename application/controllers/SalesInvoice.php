@@ -196,5 +196,17 @@ class SalesInvoice extends MY_Controller{
 		$mpdf->WriteHTML($pdfData);
 		$mpdf->Output($pdfFileName,'I');
 	}
+
+    public function getPartyBillPer(){
+        $data = $this->input->post();
+        $result = $this->salesInvoice->getPartyBillPer($data);
+        $this->printJson(['status'=>1,'bill_per'=>((!empty($result))?$result->bill_per:100),'data'=>$result]);
+    }
+
+    public function getPartyItemPrice(){
+        $data = $this->input->post();
+        $result = $this->salesInvoice->getPartyItemPrice($data);
+        $this->printJson(['status'=>1,'price'=>((!empty($result))?$result->price:0),'org_price'=>((!empty($result))?$result->org_price:0),'data'=>$result]);
+    }
 }
 ?>

@@ -32,6 +32,7 @@ class StockTrans extends MY_Controller{
     public function addStock(){
         $this->data['itemList'] = $this->item->getItemList(['item_type'=>[1]]);
         $this->data['brandList'] = $this->brandMaster->getBrandList();
+        $this->data['sizeList'] = $this->sizeMaster->getSizeList();
         $this->load->view($this->form, $this->data);
     }
 
@@ -39,16 +40,31 @@ class StockTrans extends MY_Controller{
         $data = $this->input->post();
 		$errorMessage = array();		
 
-        if(empty($data['item_id']))
-			$errorMessage['item_id'] = "Item Name is required.";
+        if(empty($data['size_id']))
+			$errorMessage['size_id_error'] = "Size is required.";
+        if(empty($data['color']))
+			$errorMessage['color_error'] = "Color is required.";
+        if(empty($data['capacity']))
+			$errorMessage['capacity_error'] = "Capacity is required.";
         if(empty(floatVal($data['qty'])))
 			$errorMessage['qty'] = "Qty is required.";
-        if(empty($data['size']))
-            $errorMessage['size'] = "Packing Standard is required.";
 
-        if(!empty(floatVal($data['qty'])) && !empty($data['size'])):
-            if(is_int(($data['qty'] / $data['size'])) == false):
-                $errorMessage['qty'] = "Invalid qty against packing standard.";
+        
+        if(!empty($data['size_id']) && !empty($data['color']) && !empty($data['capacity'])):
+            $itemDetail = $this->item->getItem(['size_id'=>$data['size_id'],'color'=>$data['color'],'capacity'=>$data['capacity']]);
+
+            if(empty($itemData)):
+                $errorMessage['item_error'] = "Item not found.";
+            endif;
+
+            unset($data['size_id'],$data['color'],$data['capacity']);
+
+            $data['item_id'] = $$itemDetail->id;
+            $data['size'] = $itemDetail->packing_standard;
+            if(!empty(floatVal($data['qty'])) && !empty($data['size'])):
+                if(is_int(($data['qty'] / $data['size'])) == false):
+                    $errorMessage['qty'] = "Invalid qty against packing standard.";
+                endif;
             endif;
         endif;
 
@@ -57,8 +73,6 @@ class StockTrans extends MY_Controller{
         else:
             $data['entry_type'] = $this->data['entryData']->id;
             $data['location_id'] = $this->RTD_STORE->id;
-            //$data['unique_id'] = 0;
-            //$data['batch_no'] = "GB";
             $this->printJson($this->itemStock->save($data));
         endif;
     }

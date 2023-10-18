@@ -160,7 +160,7 @@
             </div>
 
             <div class="col-md-2 form-group <?=((!empty($dataRow->item_type) && $dataRow->item_type != 1) || (empty($dataRow) && $item_type != 1))?"hidden":""?>">
-                <label for="packing_standard">Packing Standard</label>
+                <label for="packing_standard">Pcs./Box</label>
                 <input type="text" name="packing_standard" id="packing_standard" class="form-control numericOnly req" value="<?=(!empty($dataRow->packing_standard))?$dataRow->packing_standard:""?>">
             </div>
 

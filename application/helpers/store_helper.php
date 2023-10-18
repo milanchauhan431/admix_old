@@ -52,7 +52,7 @@ function getStoreDtHeader($page){
     $data['stockTrans'][] = ["name"=> "Item Code"];
     $data['stockTrans'][] = ["name" => "Item Name"];
     $data['stockTrans'][] = ["name" => "Qty"];
-    $data['stockTrans'][] = ["name" => "Packing Standard"];
+    $data['stockTrans'][] = ["name" => "Pcs./Box"];
     $data['stockTrans'][] = ["name" => "Remark"];
 
     return tableHeader($data[$page]);
