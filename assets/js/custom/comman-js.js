@@ -779,6 +779,7 @@ function edit(data){
 		$("#"+data.modal_id).modal({show:true});
 		$("#"+data.modal_id).css({'z-index':9999,'overflow':'auto'});
 		$("#"+data.modal_id).addClass(data.form_id+"Modal");
+		$("#"+data.modal_id+' .modal-title').html("");
 		$("#"+data.modal_id+' .modal-title').html(data.title);
 		$("#"+data.modal_id+' .modal-body').html('');
 		$("#"+data.modal_id+' .modal-body').html(response);
