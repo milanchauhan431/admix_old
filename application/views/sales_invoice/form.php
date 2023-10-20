@@ -92,13 +92,38 @@
 										</select>
 									</div>
 
-                                    <div class="col-md-4 form-group">
+                                    <div class="col-md-3 form-group">
 										<label for="sp_acc_id">GST Type </label>
                                         <select name="sp_acc_id" id="sp_acc_id" class="form-control select2 req">
 											<?=getSpAccListOption($salesAccounts,((!empty($dataRow->sp_acc_id))?$dataRow->sp_acc_id:0))?>
 										</select>
                                         <input type="hidden" id="inv_type" value="SALES">
 									</div>
+
+                                    <div class="col-md-3 form-group">
+                                        <label for="master_i_col_2">Transport Name</label>
+                                        <select name="masterDetails[i_col_2]" id="master_i_col_2" class="form-control select2">
+                                            <option value="">Select Transapoter</option>
+                                            <?php
+                                                foreach($transportList as $row):
+                                                    $selected = (!empty($dataRow->transport_id) && $dataRow->transport_id == $row->id)?"selected":"";
+                                                    echo '<option value="'.$row->id.'" data-t_id="'.$row->transport_id.'" '.$selected.'>'.$row->transport_name.'</option>';
+                                                endforeach;
+                                            ?>
+                                        </select>
+                                        <input type="hidden" name="masterDetails[t_col_4]" id="master_t_col_4" value="<?=(!empty($dataRow->transaport_name))?$dataRow->transaport_name:""?>">
+                                        
+                                    </div>
+
+                                    <div class="col-md-3 form-group">
+                                        <label for="master_t_col_5">Trasport Id</label>
+                                        <input type="text" name="masterDetails[t_col_5]" id="master_t_col_5" class="form-control" value="<?=(!empty($dataRow->transaport_gst_no))?$dataRow->transaport_gst_no:""?>" readonly />
+                                    </div>
+
+                                    <div class="col-md-3 form-group">
+                                        <label for="bill_per">Sys. Code</label>
+                                        <input type="text" name="masterDetails[i_col_1]" id="master_i_col_1" class="form-control numericOnly" value="<?=(!empty($dataRow->bill_per))?$dataRow->bill_per:"100"?>">
+                                    </div>
 
                                     <div class="col-md-2 form-group hidden">
 										<label for="challan_no">Challan No.</label>
@@ -133,7 +158,7 @@
                                         <input type="text" name="masterDetails[t_col_2]" id="master_t_col_2" class="form-control numericOnly" value="<?=(!empty($dataRow->contact_no))?$dataRow->contact_no:""?>">
                                     </div>
 
-                                    <div class="col-md-5 form-group">
+                                    <div class="col-md-12 form-group">
                                         <label for="master_t_col_3">Ship To</label>
                                         <input type="text" name="masterDetails[t_col_3]" id="master_t_col_3" class="form-control" value="<?=(!empty($dataRow->ship_address))?$dataRow->ship_address:""?>">
                                     </div>
@@ -153,10 +178,7 @@
                                         <input type="date" name="ship_bill_date" id="ship_bill_date" class="form-control" value="<?=(!empty($dataRow->ship_bill_date))?$dataRow->ship_bill_date:""?>">
                                     </div>
 
-                                    <div class="col-md-3 form-group">
-                                        <label for="bill_per">Bill (%)</label>
-                                        <input type="text" name="masterDetails[i_col_1]" id="master_i_col_1" class="form-control numericOnly" value="<?=(!empty($dataRow->bill_per))?$dataRow->bill_per:"100"?>">
-                                    </div>
+                                    
                                 </div>
 
                                 <hr>
@@ -197,7 +219,7 @@
 											</div>
                                             <div class="col-md-2 form-group">
                                                 <label for="brand_id">Brand</label>
-                                                <select name="brand_id" id="brand_id" class="form-control select2 itemFormInput">
+                                                <select id="brand_id" class="form-control select2 itemFormInput">
                                                     <option value="">Select Brand</option>
                                                     <?=getBrandListOption($brandList)?>
                                                 </select>
@@ -207,18 +229,22 @@
 												<input type="text" id="qty" class="form-control floatOnly req itemFormInput" value="0">
 											</div>
 											<div class="col-md-2 form-group">
-												<label for="packing_qty">Packing Standard</label>
+												<label for="packing_qty">Pcs./Box</label>
 												<input type="text" id="packing_qty" class="form-control itemFormInput" value="" readonly>
 											</div>
-											<div class="col-md-2 form-group">
+                                            <div class="col-md-2 form-group">
+												<label for="total_box">Total Box</label>
+												<input type="text" id="total_box" class="form-control" value="0" readonly>
+											</div>
+											<div class="col-md-2 form-group hidden">
 												<label for="disc_per">Disc. (%)</label>
 												<input type="text" id="disc_per" class="form-control floatOnly itemFormInput" value="0">
-											</div>
-											<div class="col-md-3 form-group">
+											</div>                                            
+											<div class="col-md-2 form-group">
 												<label for="price">Price</label>
 												<input type="text" id="price" class="form-control floatOnly req itemFormInput" value="0" />
 											</div>
-											<div class="col-md-3 form-group">
+											<div class="col-md-3 form-group hidden">
 												<label for="unit_id">Unit</label>        
 												<select id="unit_id" class="form-control select2 itemFormInput">
 													<option value="">Select Unit</option>
@@ -226,15 +252,15 @@
 												</select> 
 												<input type="hidden" id="unit_name" class="form-control itemFormInput" value="" />                       
 											</div>
-											<div class="col-md-3 form-group">
+											<div class="col-md-3 form-group hidden">
 												<label for="hsn_code">HSN Code</label>
 												<input type="text" id="hsn_code" class="form-control numericOnly req itemFormInput" value="" />
 												<!--<select name="hsn_code" id="hsn_code" class="form-control select2">
 													<option value="">Select HSN Code</option>
-													<?=getHsnCodeListOption($hsnList)?>
+													<?php//getHsnCodeListOption($hsnList)?>
 												</select>-->
 											</div>
-											<div class="col-md-3 form-group">
+											<div class="col-md-3 form-group hidden">
 												<label for="gst_per">GST Per.(%)</label>
 												<select id="gst_per" class="form-control select2 itemFormInput">
 													<?php
@@ -244,7 +270,7 @@
 													?>
 												</select>
 											</div>
-											<div class="col-md-10 form-group">
+											<div class="col-md-8 form-group">
 												<label for="item_remark">Remark</label>
 												<input type="text" id="item_remark" class="form-control itemFormInput" value="" />
 											</div>

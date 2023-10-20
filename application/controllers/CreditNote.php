@@ -35,6 +35,7 @@ class CreditNote extends MY_Controller{
         $this->data['trans_no'] = $this->data['entryData']->trans_no;
         $this->data['trans_number'] = $this->data['trans_prefix'].$this->data['trans_no'];
         $this->data['partyList'] = $this->party->getPartyList(['party_category'=>"1,2,3"]);
+        $this->data['brandList'] = $this->brandMaster->getBrandList();
         $this->data['itemList'] = $this->item->getItemList();
         $this->data['unitList'] = $this->item->itemUnits();
         $this->data['hsnList'] = $this->hsnModel->getHSNList();
@@ -79,6 +80,7 @@ class CreditNote extends MY_Controller{
         $this->data['dataRow'] = $dataRow = $this->creditNote->getCreditNote(['id'=>$id,'itemList'=>1]);
         $this->data['gstinList'] = $this->party->getPartyGSTDetail(['party_id' => $dataRow->party_id]);
         $this->data['partyList'] = $this->party->getPartyList(['party_category' => "1,2,3"]);
+        $this->data['brandList'] = $this->brandMaster->getBrandList();
         $this->data['itemList'] = $this->item->getItemList();
         $this->data['unitList'] = $this->item->itemUnits();
         $this->data['hsnList'] = $this->hsnModel->getHSNList();

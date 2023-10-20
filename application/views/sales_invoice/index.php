@@ -6,13 +6,13 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <!-- <div class="col-md-4">
+                            <!-- <div class="col-md-5">
                                 <ul class="nav nav-pills">
                                     <li class="nav-item"> 
-                                        <button onclick="statusTab('salesInvoiceTable',0);" id="pending_so" class="nav-tab btn waves-effect waves-light btn-outline-success active" style="outline:0px" data-toggle="tab" aria-expanded="false">Tax Invoice</button> 
+                                        <button onclick="statusTab('salesInvoiceTable',0);" id="pending_inv" class="nav-tab btn waves-effect waves-light btn-outline-success active" style="outline:0px" data-toggle="tab" aria-expanded="false">Tax Invoice</button> 
                                     </li>
                                     <li class="nav-item"> 
-                                        <button onclick="statusTab('salesInvoiceTable',1);" id="complete_so" class="nav-tab btn waves-effect waves-light btn-outline-dark" style="outline:0px" data-toggle="tab" aria-expanded="false">Canceled Invoice</button> 
+                                        <button onclick="statusTab('salesInvoiceTable',1);" id="complete_inv" class="nav-tab btn waves-effect waves-light btn-outline-dark" style="outline:0px" data-toggle="tab" aria-expanded="false">Canceled Invoice</button> 
                                     </li>
                                 </ul>
                             </div> -->
@@ -35,3 +35,5 @@
     </div>
 </div>
 <?php $this->load->view('includes/footer'); ?>
+<script src="<?=base_url()?>assets/js/custom/typehead.js"></script> 
+<script src="<?=base_url()?>assets/js/custom/e-bill.js?v=<?=time()?>"></script>

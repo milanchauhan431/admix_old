@@ -177,13 +177,13 @@ class SalesInvoiceModel extends MasterModel{
                     $stockData = [
                         'id' => "",
                         'entry_type' => $data['entry_type'],
-                        'unique_id' => 0,
+                        'unique_id' => $row['brand_id'],
                         'ref_date' => $data['trans_date'],
                         'ref_no' => $data['trans_number'],
                         'main_ref_id' => $result['id'],
                         'child_ref_id' => $itemTrans['id'],
                         'location_id' => $this->RTD_STORE->id,
-                        'batch_no' => "GB",
+                        'batch_no' => $row['brand_name'],
                         'party_id' => $data['party_id'],
                         'item_id' => $row['item_id'],
                         'p_or_m' => -1,
@@ -346,7 +346,7 @@ class SalesInvoiceModel extends MasterModel{
     public function getSalesInvoice($data){
         $queryData = array();
         $queryData['tableName'] = $this->transMain;
-        $queryData['select'] = "trans_main.*,trans_details.i_col_1 as bill_per,trans_details.t_col_1 as contact_person,trans_details.t_col_2 as contact_no,trans_details.t_col_3 as ship_address";
+        $queryData['select'] = "trans_main.*,trans_details.i_col_1 as bill_per,trans_details.t_col_1 as contact_person,trans_details.t_col_2 as contact_no,trans_details.t_col_3 as ship_address,trans_details.i_col_2 as transport_id,trans_details.t_col_4 as transaport_name,trans_details.t_col_5 as transaport_gst_no";
         $queryData['leftJoin']['trans_details'] = "trans_main.id = trans_details.main_ref_id AND trans_details.description = 'SI MASTER DETAILS' AND trans_details.table_name = '".$this->transMain."'";
         $queryData['where']['trans_main.id'] = $data['id'];
         $result = $this->row($queryData);
@@ -457,6 +457,33 @@ class SalesInvoiceModel extends MasterModel{
             $this->db->trans_rollback();
             return ['status'=>2,'message'=>"somthing is wrong. Error : ".$e->getMessage()];
         }
+    }
+
+    public function getPartyBillPer($data){
+        $queryData = array();
+        $queryData['tableName'] = $this->transMain;
+        $queryData['select'] = "trans_main.id,trans_details.i_col_1 as bill_per";
+        $queryData['leftJoin']['trans_details'] = "trans_main.id = trans_details.main_ref_id AND trans_details.description = 'SI MASTER DETAILS' AND trans_details.table_name = '".$this->transMain."'";
+        $queryData['where']['trans_main.party_id'] = $data['party_id'];
+        $queryData['where']['trans_main.entry_type'] = $this->data['entryData']->id;
+        $queryData['order_by']['trans_main.id'] = "DESC";
+        $queryData['limit'] = 1;
+        $result = $this->row($queryData);
+        return $result;
+    }
+
+    public function getPartyItemPrice($data){
+        $queryData = array();
+        $queryData['tableName'] = $this->transChild;
+        $queryData['select'] = "trans_child.price,trans_child.org_price";
+        $queryData['leftJoin']['trans_main'] = "trans_main.id = trans_child.trans_main_id";
+        $queryData['where']['trans_main.party_id'] = $data['party_id'];
+        $queryData['where']['trans_child.item_id'] = $data['item_id'];
+        $queryData['where']['trans_child.entry_type'] = $this->data['entryData']->id;
+        $queryData['order_by']['trans_child.id'] = "DESC";
+        $queryData['limit'] = 1;
+        $result = $this->row($queryData);
+        return $result;
     }
 }
 ?>

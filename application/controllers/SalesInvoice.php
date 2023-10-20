@@ -44,6 +44,7 @@ class SalesInvoice extends MY_Controller{
         $this->data['expenseList'] = $this->expenseMaster->getActiveExpenseList(2);
         $this->data['termsList'] = $this->terms->getTermsList(['type'=>'Sales']);
 		$this->data['ledgerList'] = $this->party->getPartyList(['group_code'=>["'DT'","'ED'","'EI'","'ID'","'II'"]]);
+        $this->data['transportList'] = $this->transport->getTransportList();
         $this->load->view($this->form,$this->data);
     }	
 
@@ -69,7 +70,7 @@ class SalesInvoice extends MY_Controller{
                 endif;
 
                 if($row['stock_eff'] == 1):
-                    $postData = ['location_id' => $this->RTD_STORE->id,'batch_no' => "GB",'item_id' => $row['item_id'],'stock_required'=>1,'single_row'=>1];
+                    $postData = ['location_id' => $this->RTD_STORE->id,'batch_no' => $row['brand_name'],'item_id' => $row['item_id'],'stock_required'=>1,'single_row'=>1];
                     
                     $stockData = $this->itemStock->getItemStockBatchWise($postData);  
                     
@@ -118,6 +119,7 @@ class SalesInvoice extends MY_Controller{
         $this->data['expenseList'] = $this->expenseMaster->getActiveExpenseList(2);
         $this->data['termsList'] = $this->terms->getTermsList(['type'=>'Sales']);
         $this->data['ledgerList'] = $this->party->getPartyList(['group_code'=>["'DT'","'ED'","'EI'","'ID'","'II'"]]);
+        $this->data['transportList'] = $this->transport->getTransportList();
         $this->load->view($this->form,$this->data);
     }
 
@@ -165,21 +167,20 @@ class SalesInvoice extends MY_Controller{
 		$response="";
 		$logo=base_url('assets/images/logo.png');
 		$this->data['letter_head']=base_url('assets/images/letterhead-top.png');
+        $lh_bg =  base_url('assets/images/lh_bg.jpg');
 				
         $pdfData = "";
         $countPT = count($printTypes); $i=0;
         foreach($printTypes as $printType):
             ++$i;           
             $this->data['printType'] = $printType;
-            $this->data['maxLinePP'] = (!empty($postData['max_lines']))?$postData['max_lines']:18;
+            $this->data['maxLinePP'] = (!empty($postData['max_lines']))?$postData['max_lines']:14;
 		    $pdfData .= $this->load->view('sales_invoice/print',$this->data,true);
             if($i != $countPT): $pdfData .= "<pagebreak>"; endif;
         endforeach;
             
 		$mpdf = new \Mpdf\Mpdf();
 		$pdfFileName = str_replace(["/","-"," "],"_",$invData->trans_number).'.pdf';
-		/* $stylesheet = file_get_contents(base_url('assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css'));
-        $stylesheet = file_get_contents(base_url('assets/css/style.css?v=' . time())); */
         $stylesheet = file_get_contents(base_url('assets/css/pdf_style.css?v='.time()));
 		$mpdf->WriteHTML($stylesheet,1);
 		$mpdf->SetDisplayMode('fullpage');
@@ -189,9 +190,27 @@ class SalesInvoice extends MY_Controller{
 		
 		/* $mpdf->SetHTMLHeader($htmlHeader);
 		$mpdf->SetHTMLFooter($htmlFooter); */
-		$mpdf->AddPage('P','','','','',10,5,(($postData['header_footer'] == 1)?5:35),5,5,5,'','','','','','','','','','A4-P');
+		if($postData['header_footer'] == 1)
+		{
+            $mpdf->SetDefaultBodyCSS('background', "url('".$lh_bg."')");
+            $mpdf->SetDefaultBodyCSS('background-image-resize', 6);
+		}
+		//$mpdf->AddPage('P','','','','',10,5,(($postData['header_footer'] == 1)?5:35),5,5,5,'','','','','','','','','','A4-P');
+        $mpdf->AddPage('P','','','','',7,5,43,7,3,15,'','','','','','','','','','A4-P');
 		$mpdf->WriteHTML($pdfData);
 		$mpdf->Output($pdfFileName,'I');
 	}
+
+    public function getPartyBillPer(){
+        $data = $this->input->post();
+        $result = $this->salesInvoice->getPartyBillPer($data);
+        $this->printJson(['status'=>1,'bill_per'=>((!empty($result))?$result->bill_per:100),'data'=>$result]);
+    }
+
+    public function getPartyItemPrice(){
+        $data = $this->input->post();
+        $result = $this->salesInvoice->getPartyItemPrice($data);
+        $this->printJson(['status'=>1,'price'=>((!empty($result))?$result->price:0),'org_price'=>((!empty($result))?$result->org_price:0),'data'=>$result]);
+    }
 }
 ?>

@@ -159,7 +159,10 @@ class PartyModel extends MasterModel{
 
     public function getCity($data){
         $queryData['tableName'] = $this->cities;
-		$queryData['where']['id'] = $data['id'];
+        $queryData['select'] = 'cities.*,states.name as state_name,states.gst_statecode as state_code,countries.name as country_name';
+        $queryData['leftJoin']['states'] = 'cities.state_id = states.id';
+        $queryData['leftJoin']['countries'] = "countries.id = cities.country_id";
+		$queryData['where']['cities.id'] = $data['id'];
 		return $this->row($queryData);
     }
 

@@ -49,10 +49,10 @@ function getStoreDtHeader($page){
     $data['stockTrans'][] = ["name" => "Action", "style" => "width:5%;", "textAlign" => "center"];
     $data['stockTrans'][] = ["name" => "#", "style" => "width:5%;", "textAlign" => "center"];
     $data['stockTrans'][] = ["name" => "Date"];
-    $data['stockTrans'][] = ["name"=> "Item Code"];
+    $data['stockTrans'][] = ["name"=> "Brand Name"];
     $data['stockTrans'][] = ["name" => "Item Name"];
     $data['stockTrans'][] = ["name" => "Qty"];
-    $data['stockTrans'][] = ["name" => "Packing Standard"];
+    $data['stockTrans'][] = ["name" => "Pcs./Box"];
     $data['stockTrans'][] = ["name" => "Remark"];
 
     return tableHeader($data[$page]);
@@ -141,7 +141,7 @@ function getStockTransData($data){
 
     $action = getActionButton($deleteButton);
 
-    return [$action,$data->sr_no,formatDate($data->ref_date),$data->item_code,$data->item_name,$data->qty,$data->size,$data->remark];
+    return [$action,$data->sr_no,formatDate($data->ref_date),$data->batch_no,$data->item_name,$data->qty,$data->size,$data->remark];
 }
 
 ?>
